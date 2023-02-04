@@ -1,0 +1,719 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> Delimiter //
+mysql> Create procedure getdata(in pempno int)
+    -> Begin
+    -> declare vsal decimal(9,2);
+    -> declare vmgr int;
+    -> declare vename varchar(20);
+    -> declare vremark varchar(20);
+    -> select sal,mgr,ename into vsal,vmgr,vename
+    -> from emp
+    -> where empno=pempno;
+    -> if vsal < 1500 then
+    ->    set vremark='smaller';
+    -> elseif vsal<2000 then
+    ->    set vremark='uptodate';
+    -> else
+    ->    set vremark='greater';
+    -> end if;
+    -> select vsal,vename,vmgr,vremark;
+    -> End//
+ERROR 1046 (3D000): No database selected
+mysql> use test;
+ERROR 1049 (42000): Unknown database 'test;'
+mysql> Delimiter //
+mysql> Create procedure getdata(in pempno int)
+    -> Begin
+    -> declare vsal decimal(9,2);
+    -> declare vmgr int;
+    -> declare vename varchar(20);
+    -> declare vremark varchar(20);
+    -> select sal,mgr,ename into vsal,vmgr,vename
+    -> from emp
+    -> where empno=pempno;
+    -> if vsal < 1500 then
+    ->    set vremark='smaller';
+    -> elseif vsal<2000 then
+    ->    set vremark='uptodate';
+    -> else
+    ->    set vremark='greater';
+    -> end if;
+    -> select vsal,vename,vmgr,vremark;
+    -> End//
+ERROR 1046 (3D000): No database selected
+mysql> use test
+Database changed
+mysql> Delimiter //
+mysql> Create procedure getdata(in pempno int)
+    -> Begin
+    -> declare vsal decimal(9,2);
+    -> declare vmgr int;
+    -> declare vename varchar(20);
+    -> declare vremark varchar(20);
+    -> select sal,mgr,ename into vsal,vmgr,vename
+    -> from emp
+    -> where empno=pempno;
+    -> if vsal < 1500 then
+    ->    set vremark='smaller';
+    -> elseif vsal<2000 then
+    ->    set vremark='uptodate';
+    -> else
+    ->    set vremark='greater';
+    -> end if;
+    -> select vsal,vename,vmgr,vremark;
+    -> End//
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> call getdata(7902);
+    -> //
++---------+--------+------+---------+
+| vsal    | vename | vmgr | vremark |
++---------+--------+------+---------+
+| 3000.00 | FORD   | 7566 | greater |
++---------+--------+------+---------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter //
+mysql> Create procedure findmgr(eno int)
+    -> Begin
+    -> Declare vmgrname varchar(20);
+    -> Declare vmgr, vdeptno int;
+    -> Declare vjob varchar(20);
+    -> Select mgr,deptno,job  into vmgr,vdeptno,vjob
+    -> From emp
+    -> Where empno=eno;
+    -> If vmgr=7902 then
+    ->      Set vmgrname = 'known manager';
+    -> else
+    ->      Set vmgrname = 'unknown manager';
+    -> End if;
+    -> Select vdeptno,vmgr,vjob,vmgrnanme;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call findmgr(79020;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> call findmgr(7902);
+ERROR 1054 (42S22): Unknown column 'vmgrnanme' in 'field list'
+mysql> drop procedure findmgr;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> delimiter //
+mysql> Create procedure findmgr(eno int)
+    -> Begin
+    -> Declare vmgrname varchar(20);
+    -> Declare vmgr, vdeptno int;
+    -> Declare vjob varchar(20);
+    -> Select mgr,deptno,job  into vmgr,vdeptno,vjob
+    -> From emp
+    -> Where empno=eno;
+    -> If vmgr=7902 then
+    ->      Set vmgrname = 'known manager';
+    -> else
+    ->      Set vmgrname = 'unknown manager';
+    -> End if;
+    -> Select vdeptno,vmgr,vjob,vmgrname;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call findmgr(7902;)
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+    -> call findmgr(7902);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+call findmgr(7902)' at line 1
+mysql> call findmgr(7902);
++---------+------+---------+-----------------+
+| vdeptno | vmgr | vjob    | vmgrname        |
++---------+------+---------+-----------------+
+|      20 | 7566 | ANALYST | unknown manager |
++---------+------+---------+-----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from emp
+    -> where empno=7902;
++-------+-------+---------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+---------+------+------------+---------+------+--------+
+1 row in set (0.00 sec)
+
+mysql> delimiter //
+mysql>
+mysql> create procedure generatestr(in pcnt int)
+    -> begin
+    ->   declare vstr varchar(50) default '';
+    ->   declare vn int;
+    ->   set vn=1;
+    ->   while vn<=pcnt do
+    ->   vstr=concat(vstr,vn,',');
+    -> set vn=vn+1;
+    ->
+    ->   end while;
+    ->   select vstr;
+    ->
+    ->
+    -> end//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '=concat(vstr,vn,',');
+set vn=vn+1;
+
+  end while;
+  select vstr;
+
+
+end' at line 7
+mysql> delimiter ;
+mysql> delimiter //
+mysql>
+mysql> create procedure generatestr(in pcnt int)
+    -> begin
+    ->   declare vstr varchar(50) default '';
+    ->   declare vn int;
+    ->   set vn=1;
+    ->   while vn<=pcnt do
+    ->   set vstr=concat(vstr,vn,',');
+    -> set vn=vn+1;
+    ->
+    ->   end while;
+    ->   select vstr;
+    ->
+    ->
+    -> end//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
+mysql> call generatestr(5);
++------------+
+| vstr       |
++------------+
+| 1,2,3,4,5, |
++------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create procedure generate_repeat(in pcnt int)
+    -> begin
+    ->   declare vstr varchar(50) default '';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql>   declare vn int;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'declare vn int' at line 1
+mysql>   set vn=1;
+ERROR 1193 (HY000): Unknown system variable 'vn'
+mysql>  repeat
+    ->   set vstr=concat(vstr,vn,',');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'repeat
+  set vstr=concat(vstr,vn,',')' at line 1
+mysql> set vn=vn+1;
+ERROR 1193 (HY000): Unknown system variable 'vn'
+mysql>    until vn > pcnt
+    ->   end repeate;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'until vn > pcnt
+  end repeate' at line 1
+mysql>   select vstr;
+ERROR 1054 (42S22): Unknown column 'vstr' in 'field list'
+mysql>
+mysql>
+mysql> delimiter //
+mysql>
+mysql> create procedure generate_repeat(in pcnt int)
+    -> begin
+    ->   declare vstr varchar(50) default '';
+    ->   declare vn int;
+    ->   set vn=1;
+    ->  repeat
+    ->   set vstr=concat(vstr,vn,',');
+    -> set vn=vn+1;
+    ->    until vn > pcnt
+    ->   end repeat;
+    ->   select vstr;
+    ->
+    ->
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call generate_repeate(6);
+ERROR 1305 (42000): PROCEDURE test.generate_repeate does not exist
+mysql> call generate_repeat(6);
++--------------+
+| vstr         |
++--------------+
+| 1,2,3,4,5,6, |
++--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter //
+mysql> create procedure generate_loop(in pcnt int)
+    -> begin
+    ->    declare vstr varchar(50) default '';
+    ->    declare vn int default 1;
+    ->
+    ->    label1:loop
+    ->      set vstr=concat(vstr,vn,',');
+    ->      set vn=vn+1;
+    ->      if vn>=pcnt then
+    ->           leave label1;
+    ->      end if;
+    ->    end loop;
+    ->    select vstr;
+    ->
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call generate_loop(6);
++------------+
+| vstr       |
++------------+
+| 1,2,3,4,5, |
++------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ..
+mysql> delimiter //
+mysql> Create procedure factorial(in num int)
+    -> Begin
+    -> Declare fact int;
+    -> Set fact=1;
+    -> While num > 0 do
+    ->     Set fact=fact*num;
+    ->     Set num=num-1;
+    -> End while;
+    -> Select fact;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call factorial(5)//
++------+
+| fact |
++------+
+|  120 |
++------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter //
+mysql> Create procedure factorial(in num int)
+    -> Begin
+    -> Declare fact int;
+    -> Set fact=1;
+    -> repeat
+    ->     Set fact=fact*num;
+    ->     Set num=num-1;
+    -> Until num <= 0
+    -> End repeat;
+    -> Select fact;
+    -> End//
+ERROR 1304 (42000): PROCEDURE factorial already exists
+mysql> Create procedure factorial_repeat(in num int)
+    -> Begin
+    -> Declare fact int;
+    -> Set fact=1;
+    -> repeat
+    ->     Set fact=fact*num;
+    ->     Set num=num-1;
+    -> Until num <= 0
+    -> End repeat;
+    -> Select fact;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call factorial_repeat(5);
+    -> //
++------+
+| fact |
++------+
+|  120 |
++------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> |  120 |
+    -> +-----^C
+mysql> Create procedure showtable(in num int)
+    -> Begin
+    -> Declare res int default 1;
+    -> Declare iter int default 1;
+    -> While iter <=10 do
+    ->      Set res=num*iter;
+    ->      Set iter=iter+1;
+    ->     Select res;
+    ->
+    -> End while;
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call showtable(5);
+    -> //
++------+
+| res  |
++------+
+|    5 |
++------+
+1 row in set (0.00 sec)
+
++------+
+| res  |
++------+
+|   10 |
++------+
+1 row in set (0.00 sec)
+
++------+
+| res  |
++------+
+|   15 |
++------+
+1 row in set (0.00 sec)
+
++------+
+| res  |
++------+
+|   20 |
++------+
+1 row in set (0.01 sec)
+
++------+
+| res  |
++------+
+|   25 |
++------+
+1 row in set (0.01 sec)
+
++------+
+| res  |
++------+
+|   30 |
++------+
+1 row in set (0.03 sec)
+
++------+
+| res  |
++------+
+|   35 |
++------+
+1 row in set (0.03 sec)
+
++------+
+| res  |
++------+
+|   40 |
++------+
+1 row in set (0.04 sec)
+
++------+
+| res  |
++------+
+|   45 |
++------+
+1 row in set (0.05 sec)
+
++------+
+| res  |
++------+
+|   50 |
++------+
+1 row in set (0.06 sec)
+
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> delimiter //
+mysql> create procedure displayallemp()
+    -> begin
+    ->    declare vset int default 0;
+    ->    declare empcur cursor for select empno,ename,sal from emp;
+    ->    declare continue handler for NOTFOUND set vset=1;
+    ->    declare vempno int;
+    ->    declare vename varchar(30);
+    ->    declare vsal decimal(9,2);
+    ->
+    ->    open empcur;
+    ->    label1:loop
+    ->    fetch empcur into vempno,vename,vsal;
+    ->    if vset=1 then
+    ->       leave label1;
+    ->    end if;
+    ->    select vempno,vename,vsal;
+    ->    end loop;
+    ->    close empcur;
+    -> end//
+ERROR 1319 (42000): Undefined CONDITION: NOTFOUND
+mysql> delimiter ;
+mysql> delimiter //
+mysql> create procedure displayallemp()
+    -> begin
+    ->    declare vset int default 0;
+    ->    declare empcur cursor for select empno,ename,sal from emp;
+    ->    declare continue handler for NOT FOUND set vset=1;
+    ->    declare vempno int;
+    ->    declare vename varchar(30);
+    ->    declare vsal decimal(9,2);
+    ->
+    ->    open empcur;
+    ->    label1:loop
+    ->    fetch empcur into vempno,vename,vsal;
+    ->    if vset=1 then
+    ->       leave label1;
+    ->    end if;
+    ->    select vempno,vename,vsal;
+    ->    end loop;
+    ->    close empcur;
+    -> end//
+ERROR 1337 (42000): Variable or condition declaration after cursor or handler declaration
+mysql> delimiter ;
+mysql> delimiter //
+mysql> create procedure displayallemp()
+    -> begin
+    ->    declare vset int default 0;
+    ->    declare vempno int;
+    ->    declare vename varchar(30);
+    ->    declare vsal decimal(9,2);
+    ->    declare empcur cursor for select empno,ename,sal from emp;
+    ->    declare continue handler for NOT FOUND set vset=1;
+    ->
+    ->
+    ->    open empcur;
+    ->    label1:loop
+    ->    fetch empcur into vempno,vename,vsal;
+    ->    if vset=1 then
+    ->       leave label1;
+    ->    end if;
+    ->    select vempno,vename,vsal;
+    ->    end loop;
+    ->    close empcur;
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call displayallemp;
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7369 | SMITH  | 1100.00 |
++--------+--------+---------+
+1 row in set (0.00 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7499 | ALLEN  | 1600.00 |
++--------+--------+---------+
+1 row in set (0.00 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7521 | WARD   | 1250.00 |
++--------+--------+---------+
+1 row in set (0.01 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7566 | JONES  | 2975.00 |
++--------+--------+---------+
+1 row in set (0.01 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7654 | MARTIN | 1250.00 |
++--------+--------+---------+
+1 row in set (0.02 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7698 | BLAKE  | 2850.00 |
++--------+--------+---------+
+1 row in set (0.03 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7782 | CLARK  | 2450.00 |
++--------+--------+---------+
+1 row in set (0.03 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7788 | SCOTT  | 3000.00 |
++--------+--------+---------+
+1 row in set (0.06 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7839 | KING   | 5000.00 |
++--------+--------+---------+
+1 row in set (0.08 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7844 | TURNER | 1500.00 |
++--------+--------+---------+
+1 row in set (0.09 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7876 | ADAMS  | 1100.00 |
++--------+--------+---------+
+1 row in set (0.12 sec)
+
++--------+--------+--------+
+| vempno | vename | vsal   |
++--------+--------+--------+
+|   7900 | JAMES  | 950.00 |
++--------+--------+--------+
+1 row in set (0.14 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7902 | FORD   | 3000.00 |
++--------+--------+---------+
+1 row in set (0.15 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   7934 | MILLER | 1300.00 |
++--------+--------+---------+
+1 row in set (0.18 sec)
+
++--------+--------+----------+
+| vempno | vename | vsal     |
++--------+--------+----------+
+|    123 | Rajan  | 34567.00 |
++--------+--------+----------+
+1 row in set (0.19 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   1211 | xxxx   | 3456.00 |
++--------+--------+---------+
+1 row in set (0.20 sec)
+
++--------+--------+---------+
+| vempno | vename | vsal    |
++--------+--------+---------+
+|   1212 | xxxx   | 3456.00 |
++--------+--------+---------+
+1 row in set (0.21 sec)
+
+Query OK, 0 rows affected (0.23 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+17 rows in set (0.00 sec)
+
+mysql> select ename,job,concat(ename,'---',job)
+    -> from emp;
++--------+-----------+-------------------------+
+| ename  | job       | concat(ename,'---',job) |
++--------+-----------+-------------------------+
+| SMITH  | CLERK     | SMITH---CLERK           |
+| ALLEN  | SALESMAN  | ALLEN---SALESMAN        |
+| WARD   | SALESMAN  | WARD---SALESMAN         |
+| JONES  | MANAGER   | JONES---MANAGER         |
+| MARTIN | SALESMAN  | MARTIN---SALESMAN       |
+| BLAKE  | MANAGER   | BLAKE---MANAGER         |
+| CLARK  | MANAGER   | CLARK---MANAGER         |
+| SCOTT  | ANALYST   | SCOTT---ANALYST         |
+| KING   | PRESIDENT | KING---PRESIDENT        |
+| TURNER | SALESMAN  | TURNER---SALESMAN       |
+| ADAMS  | CLERK     | ADAMS---CLERK           |
+| JAMES  | CLERK     | JAMES---CLERK           |
+| FORD   | ANALYST   | FORD---ANALYST          |
+| MILLER | CLERK     | MILLER---CLERK          |
+| Rajan  | Designer  | Rajan---Designer        |
+| xxxx   | mmm       | xxxx---mmm              |
+| xxxx   | mmm       | xxxx---mmm              |
++--------+-----------+-------------------------+
+17 rows in set (0.00 sec)
+
+mysql> delimiter //
+mysql> Create procedure genartejoblist()
+    -> begin
+    ->    declare vset int default 0;
+    ->    declare vename,vjob varchar(30);
+    ->    declare vstr varchar(500) default '';
+    ->    declare empcur cursor for select ename,job from emp;
+    ->    declare continue handler for NOT FOUND set vset=1;
+    ->    open empcur;
+    ->    label1:loop
+    ->    fetch empcur into vename,vjob;
+    ->    if vset=1 then
+    ->       leave label1;
+    ->    end if;
+    ->    set vstr=concat(vstr,vename,'----',vjob,',');
+    ->    end loop;
+    ->    select vstr;
+    ->    close empcur;
+    -> end//
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter ;
+mysql> call generatejoblist();
+ERROR 1305 (42000): PROCEDURE test.generatejoblist does not exist
+mysql> call genartejoblist();
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| vstr                                                                                                                                                                                                                                                                                   |
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| SMITH----CLERK,ALLEN----SALESMAN,WARD----SALESMAN,JONES----MANAGER,MARTIN----SALESMAN,BLAKE----MANAGER,CLARK----MANAGER,SCOTT----ANALYST,KING----PRESIDENT,TURNER----SALESMAN,ADAMS----CLERK,JAMES----CLERK,FORD----ANALYST,MILLER----CLERK,Rajan----Designer,xxxx----mmm,xxxx----mmm, |
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>

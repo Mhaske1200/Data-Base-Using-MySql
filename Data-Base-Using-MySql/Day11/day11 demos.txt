@@ -1,0 +1,553 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> Create product_data table
+    -> Create table product_data(pid int,
+    -> Pname varchar(20),
+    -> Oprice decimal(9,2),
+    -> Nprice decimal(9,2),
+    -> Uname varchar(20),
+    -> Changedate date,
+    -> Action varchar(20));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'product_data table
+Create table product_data(pid int,
+Pname varchar(20),
+Oprice ' at line 1
+mysql> Create table product_data(pid int,
+    -> Pname varchar(20),
+    -> Oprice decimal(9,2),
+    -> Nprice decimal(9,2),
+    -> Uname varchar(20),
+    -> Changedate date,
+    -> Action varchar(20));
+ERROR 1046 (3D000): No database selected
+mysql> use test
+Database changed
+mysql> Create table product_data(pid int,
+    -> Pname varchar(20),
+    -> Oprice decimal(9,2),
+    -> Nprice decimal(9,2),
+    -> Uname varchar(20),
+    -> Changedate date,
+    -> Action varchar(20));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> Create trigger ins_prod
+    -> Before insert on product
+    -> For each row
+    -> Begin
+    ->     Insert into product_data values (NEW.pid,NEW.pname,null,NEW.price,current_user(),curdate(),'before insert');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 5
+mysql> End//
+    -> delimiter //
+    -> Create trigger ins_prod
+    -> Before insert on product
+    -> For each row
+    -> Begin
+    ->     Insert into product_data values (NEW.pid,NEW.pname,null,NEW.price,current_user(),curdate(),'before insert');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'End//
+delimiter //Create trigger ins_prod
+Before insert on product
+For each row' at line 1
+mysql> End//
+    -> ^C
+mysql> delimiter //
+mysql> Create trigger ins_prod
+    -> Before insert on product
+    -> For each row
+    -> Begin
+    ->     Insert into product_data values (NEW.pid,NEW.pname,null,NEW.price,current_user(),curdate(),'before insert');
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc product;
+    -> //
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| pid   | int          | YES  |     | NULL    |       |
+| pname | varchar(25)  | YES  |     | NULL    |       |
+| qty   | int          | YES  |     | NULL    |       |
+| price | decimal(9,2) | YES  |     | NULL    |       |
+| cid   | int          | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> insert into product values(100,'nachos_11',23,134.34,1);
+    -> //
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from product_data;
+    -> //
++------+-----------+--------+--------+----------------+------------+---------------+
+| pid  | Pname     | Oprice | Nprice | Uname          | Changedate | Action        |
++------+-----------+--------+--------+----------------+------------+---------------+
+|  100 | nachos_11 |   NULL | 134.34 | root@localhost | 2022-11-08 | before insert |
++------+-----------+--------+--------+----------------+------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> Create trigger update_prod
+    -> Before update
+    -> On product
+    -> For each row
+    -> Begin
+    ->     Insert into product_data values(old.pid,old.pname,old.price,new.price,current_user(),curdate(),'before update');
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from product;
+    -> //
++------+---------------+------+--------+------+
+| pid  | pname         | qty  | price  | cid  |
++------+---------------+------+--------+------+
+|    2 | Nachos123     |  302 | 150.00 |    1 |
+|    3 | Pringles123   |   29 | 150.00 |    1 |
+|    4 | Marie gold    |   20 |  50.00 |    2 |
+|    5 | nice1234      |   35 |  45.00 |    2 |
+|    6 | good day123   |   45 |  60.00 |    2 |
+|   20 | Hide and seek |   45 |  40.00 |    2 |
+|  145 | bread         |   30 | 100.00 |    2 |
+|  222 | Marie         |   45 |  45.00 |    2 |
+|   35 | 50-50         |   34 |  45.00 |    2 |
+|  111 | xxx           |   30 |  20.00 |    1 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|  100 | aaaaa         |   41 |  51.00 |    1 |
+|  100 | nachos_11     |   23 | 134.34 |    1 |
++------+---------------+------+--------+------+
+14 rows in set (0.00 sec)
+
+mysql> update product
+    -> set price=price+0.10*price
+    -> where pid=100;
+    -> //
+Query OK, 2 rows affected, 1 warning (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 1
+
+mysql> select * from product;
+    -> //
++------+---------------+------+--------+------+
+| pid  | pname         | qty  | price  | cid  |
++------+---------------+------+--------+------+
+|    2 | Nachos123     |  302 | 150.00 |    1 |
+|    3 | Pringles123   |   29 | 150.00 |    1 |
+|    4 | Marie gold    |   20 |  50.00 |    2 |
+|    5 | nice1234      |   35 |  45.00 |    2 |
+|    6 | good day123   |   45 |  60.00 |    2 |
+|   20 | Hide and seek |   45 |  40.00 |    2 |
+|  145 | bread         |   30 | 100.00 |    2 |
+|  222 | Marie         |   45 |  45.00 |    2 |
+|   35 | 50-50         |   34 |  45.00 |    2 |
+|  111 | xxx           |   30 |  20.00 |    1 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|  100 | aaaaa         |   41 |  56.10 |    1 |
+|  100 | nachos_11     |   23 | 147.77 |    1 |
++------+---------------+------+--------+------+
+14 rows in set (0.00 sec)
+
+mysql> select * from product_data;
+    -> //
++------+-----------+--------+--------+----------------+------------+---------------+
+| pid  | Pname     | Oprice | Nprice | Uname          | Changedate | Action        |
++------+-----------+--------+--------+----------------+------------+---------------+
+|  100 | nachos_11 |   NULL | 134.34 | root@localhost | 2022-11-08 | before insert |
+|  100 | aaaaa     |  51.00 |  56.10 | root@localhost | 2022-11-08 | before update |
+|  100 | nachos_11 | 134.34 | 147.77 | root@localhost | 2022-11-08 | before update |
++------+-----------+--------+--------+----------------+------------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> 100 | aaaaa     |  51.00 |  56.10 | root@localhost | 2022-11-08 | before update |
+    -> |  100 | nachos_11 | 134.34 | 147.77 | root@localhost | 2022-11-08 | before update^Z100 | aaaaa     |  51.00 |  56.10 | root@localhost | 2022-11-08 | before update |
+    -> |  100 | nachos_11 | 134.34 | 147.77 | root@localhost | 2022-11-08 | before update
+    -> ^C
+mysql> Create trigger del_prod before delete
+    -> On product for each row
+    -> Begin
+    ->   Insert into product_data values(old.pid,old.pname,old.price,null,current_user(),curdate(),'before delete')
+    -> End;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'End' at line 5
+mysql> Create trigger del_prod before delete
+    -> On product for each row
+    -> Begin
+    ->   Insert into product_data values(old.pid,old.pname,old.price,null,current_user(),curdate(),'before delete')
+    -> end//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'end' at line 5
+mysql> Create trigger del_prod before delete
+    -> On product for each row
+    -> Begin
+    ->   Insert into product_data values(old.pid,old.pname,old.price,null,current_user(),curdate(),'before delete');
+    -> End;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from product;
+    -> //
++------+---------------+------+--------+------+
+| pid  | pname         | qty  | price  | cid  |
++------+---------------+------+--------+------+
+|    2 | Nachos123     |  302 | 150.00 |    1 |
+|    3 | Pringles123   |   29 | 150.00 |    1 |
+|    4 | Marie gold    |   20 |  50.00 |    2 |
+|    5 | nice1234      |   35 |  45.00 |    2 |
+|    6 | good day123   |   45 |  60.00 |    2 |
+|   20 | Hide and seek |   45 |  40.00 |    2 |
+|  145 | bread         |   30 | 100.00 |    2 |
+|  222 | Marie         |   45 |  45.00 |    2 |
+|   35 | 50-50         |   34 |  45.00 |    2 |
+|  111 | xxx           |   30 |  20.00 |    1 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|  100 | aaaaa         |   41 |  56.10 |    1 |
+|  100 | nachos_11     |   23 | 147.77 |    1 |
++------+---------------+------+--------+------+
+14 rows in set (0.01 sec)
+
+mysql> delete from product
+    -> where pid=100;
+    -> //
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> select * from product;
+    -> //
++------+---------------+------+--------+------+
+| pid  | pname         | qty  | price  | cid  |
++------+---------------+------+--------+------+
+|    2 | Nachos123     |  302 | 150.00 |    1 |
+|    3 | Pringles123   |   29 | 150.00 |    1 |
+|    4 | Marie gold    |   20 |  50.00 |    2 |
+|    5 | nice1234      |   35 |  45.00 |    2 |
+|    6 | good day123   |   45 |  60.00 |    2 |
+|   20 | Hide and seek |   45 |  40.00 |    2 |
+|  145 | bread         |   30 | 100.00 |    2 |
+|  222 | Marie         |   45 |  45.00 |    2 |
+|   35 | 50-50         |   34 |  45.00 |    2 |
+|  111 | xxx           |   30 |  20.00 |    1 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|   12 | marie         |   23 |  34.00 |    4 |
++------+---------------+------+--------+------+
+12 rows in set (0.00 sec)
+
+mysql> select * from product_data;
+    -> //
++------+-----------+--------+--------+----------------+------------+---------------+
+| pid  | Pname     | Oprice | Nprice | Uname          | Changedate | Action        |
++------+-----------+--------+--------+----------------+------------+---------------+
+|  100 | nachos_11 |   NULL | 134.34 | root@localhost | 2022-11-08 | before insert |
+|  100 | aaaaa     |  51.00 |  56.10 | root@localhost | 2022-11-08 | before update |
+|  100 | nachos_11 | 134.34 | 147.77 | root@localhost | 2022-11-08 | before update |
+|  100 | aaaaa     |  56.10 |   NULL | root@localhost | 2022-11-08 | before delete |
+|  100 | nachos_11 | 147.77 |   NULL | root@localhost | 2022-11-08 | before delete |
++------+-----------+--------+--------+----------------+------------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from mytable;
+    -> //
+ERROR 1146 (42S02): Table 'test.mytable' doesn't exist
+mysql> select * from muytab;
+    -> //
+ERROR 1146 (42S02): Table 'test.muytab' doesn't exist
+mysql> select * from mytab;
+    -> //
+ERROR 1146 (42S02): Table 'test.mytab' doesn't exist
+mysql> select * from mytab_3;
+    -> //
++----+------+
+| id | name |
++----+------+
+| 11 | yyyy |
++----+------+
+1 row in set (0.01 sec)
+
+mysql> create table testmytab
+    -> (id int, name varchar(20);
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> create table testmytab
+    -> (id int, name varchar(20));
+    -> //
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into testmytab values(1,'yyyy');
+    -> //
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from mytab_3;
+    -> //
++----+------+
+| id | name |
++----+------+
+| 11 | yyyy |
++----+------+
+1 row in set (0.00 sec)
+
+mysql> select * from testmytab;
+    -> //
++------+------+
+| id   | name |
++------+------+
+|    1 | yyyy |
++------+------+
+1 row in set (0.00 sec)
+
+mysql> create trigger up_testmytab
+    -> before update on mytab_3
+    -> for each row
+    -> begin
+    ->   update testmytab
+    -> set name=new.name
+    -> where id=old.id;
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> update testmytab
+    -> set id=11
+    -> where id=1;
+    -> //
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from mytrab_3;
+    -> //
+ERROR 1146 (42S02): Table 'test.mytrab_3' doesn't exist
+mysql> select * from mytab_3;
+    -> //
++----+------+
+| id | name |
++----+------+
+| 11 | yyyy |
++----+------+
+1 row in set (0.01 sec)
+
+mysql> select * from testmytab;
+    -> //
++------+------+
+| id   | name |
++------+------+
+|   11 | yyyy |
++------+------+
+1 row in set (0.00 sec)
+
+mysql> update mytab
+    -> set name='xxxx'
+    -> where id=11;
+    -> //
+ERROR 1146 (42S02): Table 'test.mytab' doesn't exist
+mysql> update mytab_3
+    -> set name='xxxx'
+    -> where id=11;
+    -> //
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from mytab_3;
+    -> //
++----+------+
+| id | name |
++----+------+
+| 11 | xxxx |
++----+------+
+1 row in set (0.00 sec)
+
+mysql> select * from testmytab;
+    -> //
++------+------+
+| id   | name |
++------+------+
+|   11 | xxxx |
++------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from emp;
+    -> //
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+17 rows in set (0.00 sec)
+
+mysql> delimiter ;
+mysql> select count(distinct sal)
+    -> from emp
+    -> where sal>1250;
++---------------------+
+| count(distinct sal) |
++---------------------+
+|                  10 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select *
+    -> from emp
+    -> order by sal desc;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+17 rows in set (0.00 sec)
+
+mysql> select count(distinct sal)
+    -> from emp
+    -> where sal>3000;
++---------------------+
+| count(distinct sal) |
++---------------------+
+|                   3 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from emp e
+    -> where 3=(select count(deistinct sal)
+    -> select * from emp e^C
+mysql> select *
+    -> from emp
+    -> order by sal desc;^C
+mysql>
+mysql> select *
+    -> from emp e
+    -> where 3=(select count(distinct sal)
+    ->          from emp m
+    -> where m.sal>e.sal);
++-------+-------+---------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000.00 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+---------+------+------------+---------+------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e
+    -> where 4>(select count(distinct sal)
+    ->          from emp m
+    -> where m.sal>e.sal);
++-------+-------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+-------+-----------+------+------------+----------+---------+--------+
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|   123 | Rajan | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx  | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx  | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
++-------+-------+-----------+------+------------+----------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e
+    -> where 4>(select count(distinct sal)
+    ->          from emp m
+    -> where m.sal>e.sal)
+    -> order by sal desc;
++-------+-------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+-------+-----------+------+------------+----------+---------+--------+
+|   123 | Rajan | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  1211 | xxxx  | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx  | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
++-------+-------+-----------+------+------------+----------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e, dept d,salgrade s
+    -> where e.deptno=d.deptno and e.sal between s.losal and s.hisal;
++-------+--------+-----------+------+------------+---------+---------+--------+--------+------------+----------+-------+-------+-------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO | DEPTNO | DNAME      | LOC      | GRADE | LOSAL | HISAL |
++-------+--------+-----------+------+------------+---------+---------+--------+--------+------------+----------+-------+-------+-------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 | 1100.00 |    NULL |     20 |     20 | RESEARCH   | DALLAS   |     1 |   700 |  1200 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |     20 | RESEARCH   | DALLAS   |     1 |   700 |  1200 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |     30 | SALES      | CHICAGO  |     1 |   700 |  1200 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |     30 | SALES      | CHICAGO  |     2 |  1201 |  1400 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |     30 | SALES      | CHICAGO  |     2 |  1201 |  1400 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |     10 | ACCOUNTING | NEW YORK |     2 |  1201 |  1400 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |     30 | SALES      | CHICAGO  |     3 |  1401 |  2000 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |     30 | SALES      | CHICAGO  |     3 |  1401 |  2000 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |     30 | SALES      | CHICAGO  |     4 |  2001 |  3000 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |     10 | ACCOUNTING | NEW YORK |     4 |  2001 |  3000 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |     10 | ACCOUNTING | NEW YORK |     5 |  3001 |  9999 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 | 3456.00 |  456.00 |     10 |     10 | ACCOUNTING | NEW YORK |     5 |  3001 |  9999 |
+|  1212 | xxxx   | mmm       | 7902 | 2018-02-02 | 3456.00 |  456.00 |     20 |     20 | RESEARCH   | DALLAS   |     5 |  3001 |  9999 |
++-------+--------+-----------+------+------------+---------+---------+--------+--------+------------+----------+-------+-------+-------+
+16 rows in set (0.01 sec)
+
+mysql> select empno,ename,e.deptno,dname,dloc,grade,losal,hisal
+    -> from emp e, dept d,salgrade s
+    -> where e.deptno=d.deptno and e.sal between s.losal and s.hisal;
+ERROR 1054 (42S22): Unknown column 'dloc' in 'field list'
+mysql> select empno,ename,e.deptno,dname,loc,grade,losal,hisal
+    -> from emp e, dept d,salgrade s
+    -> where e.deptno=d.deptno and e.sal between s.losal and s.hisal;
++-------+--------+--------+------------+----------+-------+-------+-------+
+| empno | ename  | deptno | dname      | loc      | grade | losal | hisal |
++-------+--------+--------+------------+----------+-------+-------+-------+
+|  7369 | SMITH  |     20 | RESEARCH   | DALLAS   |     1 |   700 |  1200 |
+|  7876 | ADAMS  |     20 | RESEARCH   | DALLAS   |     1 |   700 |  1200 |
+|  7900 | JAMES  |     30 | SALES      | CHICAGO  |     1 |   700 |  1200 |
+|  7521 | WARD   |     30 | SALES      | CHICAGO  |     2 |  1201 |  1400 |
+|  7654 | MARTIN |     30 | SALES      | CHICAGO  |     2 |  1201 |  1400 |
+|  7934 | MILLER |     10 | ACCOUNTING | NEW YORK |     2 |  1201 |  1400 |
+|  7499 | ALLEN  |     30 | SALES      | CHICAGO  |     3 |  1401 |  2000 |
+|  7844 | TURNER |     30 | SALES      | CHICAGO  |     3 |  1401 |  2000 |
+|  7566 | JONES  |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7698 | BLAKE  |     30 | SALES      | CHICAGO  |     4 |  2001 |  3000 |
+|  7782 | CLARK  |     10 | ACCOUNTING | NEW YORK |     4 |  2001 |  3000 |
+|  7788 | SCOTT  |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7902 | FORD   |     20 | RESEARCH   | DALLAS   |     4 |  2001 |  3000 |
+|  7839 | KING   |     10 | ACCOUNTING | NEW YORK |     5 |  3001 |  9999 |
+|  1211 | xxxx   |     10 | ACCOUNTING | NEW YORK |     5 |  3001 |  9999 |
+|  1212 | xxxx   |     20 | RESEARCH   | DALLAS   |     5 |  3001 |  9999 |
++-------+--------+--------+------------+----------+-------+-------+-------+
+16 rows in set (0.00 sec)
+
+mysql>

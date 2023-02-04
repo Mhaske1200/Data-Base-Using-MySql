@@ -1,0 +1,210 @@
+$exists, $type, $not
+1. find all moves with type of rating is string
+ db.movie.find({rating:{$type:"string"}}).pretty();
+ 
+2. find all movies with rating is null
+this will show you all the documents with rating key is there
+with null value
+and also show you documents in which rating key is not there 
+db.movie.find({rating:null})
+
+3.find all movies with rating key exists and its value is null
+db.movie.find({rating:{$in:[null],$exists:true}}).pretty()
+
+4. to find all movies with rating key does not exists
+db.movie.find({rating:{$exists:false}}).pretty()
+
+----- how to remove the data
+remove, deleteMany,deleteOne
+
+
+-----to create inventory collection
+db.inventory.insertMany( [
+   { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
+   { item: "notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, status: "P" },
+   { item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D" },
+   { item: "planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, status: "D" },
+   { item: "postcard", qty: 45, size: { h: 10, w: 15.25, uom: "cm" }, status: "A" },
+] );
+
+1. to delete all documnets
+db.inventory.deleteMany({})
+
+2. delete the first document which matches the condition
+db.inventory.deleteOne({status:'A'})
+
+3. delete all the documents which matches the condition
+db.inventory.deleteMany({status:'D'})
+db.inventory.remove({status:'D'})
+
+------to create index
+--- ensureIndex works in version 3 and is removed from version 5
+db.movie.ensureIndex({rating:-1,price:1})
+---- it available from version 3 onward  
+db.movie.createIndex({rating:-1,price:1})
+
+----to delete the index
+db.movie.dropIndex("rating_1")
+
+---- to see the list of indexes on a collection
+db.movie.getIndexes()
+
+----read type of indexes
+https://www.mongodb.com/docs/manual/indexes/
+
+----- to update the data
+----to update only first matching document
+updateOne(<criteria>,<update action>)
+
+----to update all matching documents
+updateMany(<criteria>,<update action>)
+---this can be used for updateOne a\or UpadateMany
+if {multi:false} ----> then update only first matching document
+if {multi:true} ----> then update all matching documents
+update if the record is found , or insert the record
+update(<criteria>,<update action>,{multi:true,upsert:true})
+
+-----operators in update
+$set --- to overwrite the value of the key if key exists otherwise
+adds key:value pair
+$currentDate --- to assign todays date to a key
+$unset---- to remove the key:value pair
+
+$inc --- to increament or decreament the value
+
+$mul --- to multiply or divide the value
+
+$max ---- to overwrite the value of the key only if the existing value 
+is < then given value
+
+$min ---- to overwrite the value of the key only if the existing value 
+is > then given value
+
+$rename --- to change the name of the existing key
+
+
+------operators on array
+$push----> to add the value at the end of the array
+
+$each----> used with $push to add multiple values at the end
+
+$position--->It is used with $push and $each to insert the values
+at given position
+
+$pop----> to delete the value from the array either from the end
+or from the beginning
+
+$pull---->to delete the value from the array with matching condition
+
+$----> will update the first matching value from the array
+
+$[]---> will update all the values in the array
+
+$[identifier]----> will update all the values which satisfies the filter
+
+1. to update rating of movie with name starts with b to 4
+and also assign todays date to key lastmodified
+db.movie.update(
+{name:/^[Bb]/},
+{
+$set:{rating:4},
+$currentDate:{lastmodified:true}
+},
+{multi:true})
+
+2. to increase the price of movies with name paa, kahani,padmavat
+by 50 rs
+ db.movie.update({name:{$in:['paa','kahani','padmavat']}},
+ {$inc:{price:50}},{multi:true})
+ 
+3. to increase the price of movies with name paa, kahani,padmavat
+by 10%
+
+1*price+0.10*price
+price(1+0.10)
+price*1.10
+
+db.movie.update({name:{$in:['paa','kahani','padmavat']}},
+ {$mul:{price:1.10}},{multi:true})
+ 
+4. change the rating to 5 if the existing rating is < 5 for all movies
+db.movie.update({},{$max:{rating:5}},{multi:true})
+ 
+ 
+5. change the rating to 5 if the existing rating is >5 for all movies
+db.movie.update({},{$min:{rating:5}},{multi:true})
+
+6. to delete the key rdate from movie paa
+db.movie.update({name:'paa'},{$unset:{rdate:""}})
+
+7. add a new actor in movie kesari
+db.movie.update({name:'kesari'},{$push:{actor:'tushar'}},{multi:true})
+
+8. add a new actor in movie kesari
+db.movie.update({name:'kesari'},
+{$push:{actor:{$each:['xxx','yyyy']}}},{multi:true})
+
+8. add a new actor in movie kesari at position 1
+db.movie.update({name:'kesari'},
+{$push:{actor:{$each:['xxx'],$position:1}}},{multi:true})
+
+9. to increase all values of marks array for all documents
+ db.student.update({name:/^R/},{$inc:{'marks.$[]':-5}},{multi:true})
+
+10. to increase the first matching value within array
+  for all documents
+ db.student.update({name:/^R/,marks:{$gt:90}},{$inc:{'marks.$':-5}},{multi:true})
+
+10. to increase all matching value within array
+  for all documents
+ db.student.update({name:/^R/},{$inc:{'marks.$[elem]':2}},
+ {multi:true,
+ arrayFilters:[{elem:{$lt:90}}]})
+ 
+11.to modify rating to 5 and price to 200, 
+increase ticket_no by 20
+for movie khubsurat if found otherwise insert
+db.movie.update({name:'khubsurat'},
+{$set:{rating:5,price:200},$inc:{ticket_no:20}},
+{multi:true,upsert:true})
+
+
+update assignment
+27.	Change hrs to 6 for project-1 for all employees if 
+they working on the project-1 for < 6 hrs. 
+otherwise keep the existing value. 
+
+db.employee.update(
+{'project.name':'Project-1'},
+{$max:{'project.$.hrs':6}},
+{multi:true})
+
+26.	Add 2 new projects at the end of array for
+ all employees whose skillset contains Perl or python 
+
+db.employee.update({skilset:{$in:['perl','python']}},
+{$push:{project:{$each:[{name:'project-3',Hrs:5},{name:'project-4',Hrs:7}]}}},
+{multi:true}) 
+
+
+
+in mysql to assign the permission
+GRANT type_of_permission ON database_name.table_name TO 'username'@'localhost';
+to remove the permission
+REVOKE type_of_permission ON database_name.table_name FROM 'username'@'localhost';
+
+1. assign select and update permission on emp tbale
+to RAJAN
+grant select,update on test.emp to 'rajan'@'localhost'
+
+1. assign all permission on emp tbale
+to RAJAN
+grant all on test.emp to 'rajan'@'localhost' with grant option
+
+1. assign select and update permission on all the tables in test
+to RAJAN
+grant select,update on test.* to 'rajan'@'localhost'
+
+
+1. to remove the permission
+revoke select,update on test.* from 'rajan'@'localhost'

@@ -1,0 +1,17 @@
+create trigger insert_emp_back
+before insert on emp for each row
+begin
+insert into emp_back values(New.empno , New.ename , null , New.sal);
+end //
+
+create trigger update_emp_back
+before update on emp for each row
+begin
+insert into emp_back values(Old.empno , Old.ename , Old.sal , New.sal);
+end //
+
+create trigger delete_emp_back
+before delete on emp for each row
+begin
+insert into emp_back values(Old.empno , Old.ename , Old.sal , null );
+end //

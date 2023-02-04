@@ -1,0 +1,27 @@
+create function ctc(psal decimal(9,2) , phiredate date) returns decimal(9,2)
+begin 
+declare vctc decimal(9,2);
+
+declare vspecall decimal(9,2);
+
+	
+	if ( year_exp(phiredate) < 1 ) then
+	set vspecall= 1;
+
+	elseif ( year_exp(phiredate) < 2 ) then
+	set vspecall= psal*1.10;
+
+	elseif ( year_exp(phiredate) < 4 ) then
+	set vspecall= psal*1.20;
+
+	else 
+	set vspecall= psal*1.30;
+	
+end if;
+
+	set vctc = psal*1.27;
+	
+return vspecall+vctc;
+
+end//
+

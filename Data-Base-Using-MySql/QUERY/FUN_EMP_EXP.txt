@@ -1,0 +1,6 @@
+delimiter //
+set global log_bin_trust_function_creators =1;
+create function year_exp (vhiredate date ) returns int
+begin
+return floor(datediff(curdate() , vhiredate)/365);
+end//

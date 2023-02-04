@@ -1,0 +1,607 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test;
+Database changed
+mysql> Delimiter //
+mysql> Create procedure myproc()
+    -> Begin
+    -> Declare vempno,vdeptno int;
+    -> Declare vename,vjob, vstatus varchar(20)
+    -> Declare vsal,vavg decimal(9,2)
+    -> Declare vset int default 0;
+    -> Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+    -> Declare continue handler for not found set vset=1;
+    ->
+    -> Open empcur;
+    -> Label1:loop
+    -> Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+    -> If vset=1 then
+    ->      Leave lablel1;
+    -> End if;
+    -> Select avg(sal) into vavg
+    -> From emp
+    -> Where deptno=vdeptno;
+    -> If vsal > vavg then
+    ->      Set vstatus ='greater';
+    -> Elseif vsal < vavg then
+    ->           Set vstatus ='lesser';
+    -> Else
+    ->       Set vstatus ='equal';
+    -> End if;
+    -> Select vempno,vename,vsal,vjob,vdetno,vavg,vstatus;
+    -> End loop;
+    -> Close empcur;
+    -> End//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Declare vsal,vavg decimal(9,2)
+Declare vset int default 0;
+Declare empcur cursor' at line 5
+mysql> )Delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')Delimiter' at line 1
+mysql> Create procedure myproc()
+    -> Begin
+    -> Declare vempno,vdeptno int;
+    -> Declare vename,vjob, vstatus varchar(20);
+    -> Declare vsal,vavg decimal(9,2);
+    -> Declare vset int default 0;
+    -> Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+    -> Declare continue handler for not found set vset=1;
+    ->
+    -> Open empcur;
+    -> Label1:loop
+    -> Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+    -> If vset=1 then
+    ->      Leave lablel1;
+    -> End if;
+    -> Select avg(sal) into vavg
+    -> From emp
+    -> Where deptno=vdeptno;
+    -> If vsal > vavg then
+    ->      Set vstatus ='greater';
+    -> Elseif vsal < vavg then
+    ->           Set vstatus ='lesser';
+    -> Else
+    ->       Set vstatus ='equal';
+    -> End if;
+    -> Select vempno,vename,vsal,vjob,vdetno,vavg,vstatus;
+    -> End loop;
+    -> Close empcur;
+    -> End//
+ERROR 1308 (42000): LEAVE with no matching label: lablel1
+mysql> Delimiter //
+mysql> Create procedure myproc()
+    -> Begin
+    -> Declare vempno,vdeptno int;
+    -> Declare vename,vjob, vstatus varchar(20);
+    -> Declare vsal,vavg decimal(9,2);
+    -> Declare vset int default 0;
+    -> Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+    -> Declare continue handler for not found set vset=1;
+    ->
+    -> Open empcur;
+    -> label1:loop
+    -> Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+    -> If vset=1 then
+    ->      Leave label1;
+    -> End if;
+    -> Select avg(sal) into vavg
+    -> From emp
+    -> Where deptno=vdeptno;
+    -> If vsal > vavg then
+    ->      Set vstatus ='greater';
+    -> Elseif vsal < vavg then
+    ->           Set vstatus ='lesser';
+    -> Else
+    ->       Set vstatus ='equal';
+    -> End if;
+    -> Select vempno,vename,vsal,vjob,vdetno,vavg,vstatus;
+    -> End loop;
+    -> Close empcur;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call myproc();
+    -> //
+ERROR 1054 (42S22): Unknown column 'vdetno' in 'field list'
+mysql> Delimiter //
+mysql> Create procedure myproc()
+    -> Begin
+    -> Declare vempno,vdeptno int;
+    -> Declare vename,vjob, vstatus varchar(20);
+    -> Declare vsal,vavg decimal(9,2);
+    -> Declare vset int default 0;
+    -> Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+    -> Declare continue handler for not found set vset=1;
+    ->
+    -> Open empcur;
+    -> label1:loop
+    -> Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+    -> If vset=1 then
+    ->      Leave label1;
+    -> End if;
+    -> Select avg(sal) into vavg
+    -> From emp
+    -> Where deptno=vdeptno;
+    -> If vsal > vavg then
+    ->      Set vstatus ='greater';
+    -> Elseif vsal < vavg then
+    ->           Set vstatus ='lesser';
+    -> Else
+    ->       Set vstatus ='equal';
+    -> End if;
+    -> Select vempno,vename,vsal,vjob,vdeptno,vavg,vstatus;
+    -> End loop;
+    -> Close empcur;
+    -> End//
+ERROR 1304 (42000): PROCEDURE myproc already exists
+mysql> drop procedure myproc;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter //
+mysql> Create procedure myproc()
+    -> Begin
+    -> Declare vempno,vdeptno int;
+    -> Declare vename,vjob, vstatus varchar(20);
+    -> Declare vsal,vavg decimal(9,2);
+    -> Declare vset int default 0;
+    -> Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+    -> Declare continue handler for not found set vset=1;
+    ->
+    -> Open empcur;
+    -> label1:loop
+    -> Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+    -> If vset=1 then
+    ->      Leave label1;
+    -> End if;
+    -> Select avg(sal) into vavg
+    -> From emp
+    -> Where deptno=vdeptno;
+    -> If vsal > vavg then
+    ->      Set vstatus ='greater';
+    -> Elseif vsal < vavg then
+    ->           Set vstatus ='lesser';
+    -> Else
+    ->       Set vstatus ='equal';
+    -> End if;
+    -> Select vempno,vename,vsal,vjob,vdeptno,vavg,vstatus;
+    -> End loop;
+    -> Close empcur;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call myproc();
+    -> //
++--------+--------+---------+-------+---------+---------+---------+
+| vempno | vename | vsal    | vjob  | vdeptno | vavg    | vstatus |
++--------+--------+---------+-------+---------+---------+---------+
+|   7369 | SMITH  | 1100.00 | CLERK |      20 | 2438.50 | lesser  |
++--------+--------+---------+-------+---------+---------+---------+
+1 row in set (0.00 sec)
+
++--------+--------+---------+----------+---------+---------+---------+
+| vempno | vename | vsal    | vjob     | vdeptno | vavg    | vstatus |
++--------+--------+---------+----------+---------+---------+---------+
+|   7499 | ALLEN  | 1600.00 | SALESMAN |      30 | 1566.67 | greater |
++--------+--------+---------+----------+---------+---------+---------+
+1 row in set (0.00 sec)
+
++--------+--------+---------+----------+---------+---------+---------+
+| vempno | vename | vsal    | vjob     | vdeptno | vavg    | vstatus |
++--------+--------+---------+----------+---------+---------+---------+
+|   7521 | WARD   | 1250.00 | SALESMAN |      30 | 1566.67 | lesser  |
++--------+--------+---------+----------+---------+---------+---------+
+1 row in set (0.01 sec)
+
++--------+--------+---------+---------+---------+---------+---------+
+| vempno | vename | vsal    | vjob    | vdeptno | vavg    | vstatus |
++--------+--------+---------+---------+---------+---------+---------+
+|   7566 | JONES  | 2975.00 | MANAGER |      20 | 2438.50 | greater |
++--------+--------+---------+---------+---------+---------+---------+
+1 row in set (0.02 sec)
+
++--------+--------+---------+----------+---------+---------+---------+
+| vempno | vename | vsal    | vjob     | vdeptno | vavg    | vstatus |
++--------+--------+---------+----------+---------+---------+---------+
+|   7654 | MARTIN | 1250.00 | SALESMAN |      30 | 1566.67 | lesser  |
++--------+--------+---------+----------+---------+---------+---------+
+1 row in set (0.03 sec)
+
++--------+--------+---------+---------+---------+---------+---------+
+| vempno | vename | vsal    | vjob    | vdeptno | vavg    | vstatus |
++--------+--------+---------+---------+---------+---------+---------+
+|   7698 | BLAKE  | 2850.00 | MANAGER |      30 | 1566.67 | greater |
++--------+--------+---------+---------+---------+---------+---------+
+1 row in set (0.05 sec)
+
++--------+--------+---------+---------+---------+---------+---------+
+| vempno | vename | vsal    | vjob    | vdeptno | vavg    | vstatus |
++--------+--------+---------+---------+---------+---------+---------+
+|   7782 | CLARK  | 2450.00 | MANAGER |      10 | 9354.60 | lesser  |
++--------+--------+---------+---------+---------+---------+---------+
+1 row in set (0.10 sec)
+
++--------+--------+---------+---------+---------+---------+---------+
+| vempno | vename | vsal    | vjob    | vdeptno | vavg    | vstatus |
++--------+--------+---------+---------+---------+---------+---------+
+|   7788 | SCOTT  | 3000.00 | ANALYST |      20 | 2438.50 | greater |
++--------+--------+---------+---------+---------+---------+---------+
+1 row in set (0.12 sec)
+
++--------+--------+---------+-----------+---------+---------+---------+
+| vempno | vename | vsal    | vjob      | vdeptno | vavg    | vstatus |
++--------+--------+---------+-----------+---------+---------+---------+
+|   7839 | KING   | 5000.00 | PRESIDENT |      10 | 9354.60 | lesser  |
++--------+--------+---------+-----------+---------+---------+---------+
+1 row in set (0.14 sec)
+
++--------+--------+---------+----------+---------+---------+---------+
+| vempno | vename | vsal    | vjob     | vdeptno | vavg    | vstatus |
++--------+--------+---------+----------+---------+---------+---------+
+|   7844 | TURNER | 1500.00 | SALESMAN |      30 | 1566.67 | lesser  |
++--------+--------+---------+----------+---------+---------+---------+
+1 row in set (0.16 sec)
+
++--------+--------+---------+-------+---------+---------+---------+
+| vempno | vename | vsal    | vjob  | vdeptno | vavg    | vstatus |
++--------+--------+---------+-------+---------+---------+---------+
+|   7876 | ADAMS  | 1100.00 | CLERK |      20 | 2438.50 | lesser  |
++--------+--------+---------+-------+---------+---------+---------+
+1 row in set (0.18 sec)
+
++--------+--------+--------+-------+---------+---------+---------+
+| vempno | vename | vsal   | vjob  | vdeptno | vavg    | vstatus |
++--------+--------+--------+-------+---------+---------+---------+
+|   7900 | JAMES  | 950.00 | CLERK |      30 | 1566.67 | lesser  |
++--------+--------+--------+-------+---------+---------+---------+
+1 row in set (0.21 sec)
+
++--------+--------+---------+---------+---------+---------+---------+
+| vempno | vename | vsal    | vjob    | vdeptno | vavg    | vstatus |
++--------+--------+---------+---------+---------+---------+---------+
+|   7902 | FORD   | 3000.00 | ANALYST |      20 | 2438.50 | greater |
++--------+--------+---------+---------+---------+---------+---------+
+1 row in set (0.22 sec)
+
++--------+--------+---------+-------+---------+---------+---------+
+| vempno | vename | vsal    | vjob  | vdeptno | vavg    | vstatus |
++--------+--------+---------+-------+---------+---------+---------+
+|   7934 | MILLER | 1300.00 | CLERK |      10 | 9354.60 | lesser  |
++--------+--------+---------+-------+---------+---------+---------+
+1 row in set (0.24 sec)
+
++--------+--------+----------+----------+---------+---------+---------+
+| vempno | vename | vsal     | vjob     | vdeptno | vavg    | vstatus |
++--------+--------+----------+----------+---------+---------+---------+
+|    123 | Rajan  | 34567.00 | Designer |      10 | 9354.60 | greater |
++--------+--------+----------+----------+---------+---------+---------+
+1 row in set (0.25 sec)
+
++--------+--------+---------+------+---------+---------+---------+
+| vempno | vename | vsal    | vjob | vdeptno | vavg    | vstatus |
++--------+--------+---------+------+---------+---------+---------+
+|   1211 | xxxx   | 3456.00 | mmm  |      10 | 9354.60 | lesser  |
++--------+--------+---------+------+---------+---------+---------+
+1 row in set (0.27 sec)
+
++--------+--------+---------+------+---------+---------+---------+
+| vempno | vename | vsal    | vjob | vdeptno | vavg    | vstatus |
++--------+--------+---------+------+---------+---------+---------+
+|   1212 | xxxx   | 3456.00 | mmm  |      20 | 2438.50 | greater |
++--------+--------+---------+------+---------+---------+---------+
+1 row in set (0.29 sec)
+
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> Create function calcexp(hdate date) returns int
+    -> Begin
+    ->   Declare vexp int;
+    ->   Set vexp=floor(datediff(curdate(),hdate)/365)
+    -> Return vexp;
+    -> End//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Return vexp;
+End' at line 5
+mysql> SET GLOBAL log_bin_trust_function_creators = 1;
+    -> //
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Create function calcexp(hdate date) returns int
+    -> Begin
+    ->     Declare vexp int;
+    ->    Set vexp=floor(datediff(curdate(),hdate)/365);
+    ->    Return vexp;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select empno,ename,hiredate,calcexp(hiredate)
+    -> from emp;
+    -> //
++-------+--------+------------+-------------------+
+| empno | ename  | hiredate   | calcexp(hiredate) |
++-------+--------+------------+-------------------+
+|  7369 | SMITH  | 1980-12-17 |                41 |
+|  7499 | ALLEN  | 1981-02-20 |                41 |
+|  7521 | WARD   | 1981-02-22 |                41 |
+|  7566 | JONES  | 1981-04-02 |                41 |
+|  7654 | MARTIN | 1981-09-28 |                41 |
+|  7698 | BLAKE  | 1981-05-01 |                41 |
+|  7782 | CLARK  | 1981-06-09 |                41 |
+|  7788 | SCOTT  | 1982-12-09 |                39 |
+|  7839 | KING   | 1981-11-17 |                41 |
+|  7844 | TURNER | 1981-09-08 |                41 |
+|  7876 | ADAMS  | 1983-01-12 |                39 |
+|  7900 | JAMES  | 1981-12-03 |                40 |
+|  7902 | FORD   | 1981-12-03 |                40 |
+|  7934 | MILLER | 1982-01-23 |                40 |
+|   123 | Rajan  | 2017-01-01 |                 5 |
+|  1211 | xxxx   | 2018-02-02 |                 4 |
+|  1212 | xxxx   | 2018-02-02 |                 4 |
++-------+--------+------------+-------------------+
+17 rows in set (0.01 sec)
+
+mysql> show procedure status where db="test";
+    -> //
++------+----------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db   | Name                 | Type      | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++------+----------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| test | assign_remark        | PROCEDURE | root@localhost | 2022-10-10 11:35:40 | 2022-10-10 11:35:40 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | calculatediscount    | PROCEDURE | root@localhost | 2021-07-14 10:43:47 | 2021-07-14 10:43:47 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | caldept              | PROCEDURE | root@localhost | 2022-10-10 09:17:12 | 2022-10-10 09:17:12 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | changesal            | PROCEDURE | root@localhost | 2022-10-10 09:59:06 | 2022-10-10 09:59:06 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | checkdata            | PROCEDURE | root@localhost | 2022-11-04 17:48:24 | 2022-11-04 17:48:24 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | displayallemp        | PROCEDURE | root@localhost | 2022-11-05 17:43:51 | 2022-11-05 17:43:51 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | displaytable         | PROCEDURE | root@localhost | 2022-10-11 09:04:39 | 2022-10-11 09:04:39 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | display_empdata      | PROCEDURE | root@localhost | 2021-07-14 10:14:15 | 2021-07-14 10:14:15 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | display_num          | PROCEDURE | root@localhost | 2022-10-10 12:24:47 | 2022-10-10 12:24:47 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | display_num_loop     | PROCEDURE | root@localhost | 2022-10-10 12:32:59 | 2022-10-10 12:32:59 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | display_num_repeat   | PROCEDURE | root@localhost | 2022-10-10 12:29:50 | 2022-10-10 12:29:50 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | disp_empdata         | PROCEDURE | root@localhost | 2021-07-14 11:37:28 | 2021-07-14 11:37:28 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | dis_discount         | PROCEDURE | root@localhost | 2021-07-14 12:48:57 | 2021-07-14 12:48:57 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | divisible_by_3       | PROCEDURE | root@localhost | 2022-10-10 13:05:27 | 2022-10-10 13:05:27 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | empno_job            | PROCEDURE | root@localhost | 2022-10-11 08:46:08 | 2022-10-11 08:46:08 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | factorial            | PROCEDURE | root@localhost | 2022-11-05 16:14:21 | 2022-11-05 16:14:21 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | factorial_repeat     | PROCEDURE | root@localhost | 2022-11-05 16:50:25 | 2022-11-05 16:50:25 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | findcntdept          | PROCEDURE | root@localhost | 2022-10-10 09:35:05 | 2022-10-10 09:35:05 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | findmgr              | PROCEDURE | root@localhost | 2022-11-05 15:12:59 | 2022-11-05 15:12:59 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | genartejoblist       | PROCEDURE | root@localhost | 2022-11-05 18:00:32 | 2022-11-05 18:00:32 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | gencnt               | PROCEDURE | root@localhost | 2021-02-06 14:37:56 | 2021-02-06 14:37:56 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | generatestr          | PROCEDURE | root@localhost | 2022-11-05 15:34:45 | 2022-11-05 15:34:45 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | generate_loop        | PROCEDURE | root@localhost | 2022-11-05 16:02:42 | 2022-11-05 16:02:42 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | generate_repeat      | PROCEDURE | root@localhost | 2022-11-05 15:48:29 | 2022-11-05 15:48:29 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | generate_user_list   | PROCEDURE | root@localhost | 2022-10-11 11:29:25 | 2022-10-11 11:29:25 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getavgsal            | PROCEDURE | root@localhost | 2022-11-04 17:28:00 | 2022-11-04 17:28:00 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getcnt               | PROCEDURE | root@localhost | 2022-11-04 17:18:17 | 2022-11-04 17:18:17 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getcnt1              | PROCEDURE | root@localhost | 2021-12-16 20:50:38 | 2021-12-16 20:50:38 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getdata              | PROCEDURE | root@localhost | 2022-11-05 15:00:54 | 2022-11-05 15:00:54 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getremark            | PROCEDURE | root@localhost | 2022-11-04 18:00:19 | 2022-11-04 18:00:19 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | getUserCount         | PROCEDURE | root@localhost | 2021-08-11 18:25:15 | 2021-08-11 18:25:15 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | insdept              | PROCEDURE | root@localhost | 2022-10-10 09:11:39 | 2022-10-10 09:11:39 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | insert_userentity111 | PROCEDURE | root@localhost | 2021-07-15 11:49:25 | 2021-07-15 11:49:25 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | insert_userentityt   | PROCEDURE | root@localhost | 2021-07-15 11:46:03 | 2021-07-15 11:46:03 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | myproc               | PROCEDURE | root@localhost | 2022-11-07 14:40:40 | 2022-11-07 14:40:40 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | pattern              | PROCEDURE | root@localhost | 2022-10-11 09:30:52 | 2022-10-11 09:30:52 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | showtable            | PROCEDURE | root@localhost | 2022-11-05 17:03:50 | 2022-11-05 17:03:50 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | updatesal            | PROCEDURE | root@localhost | 2022-10-10 10:28:41 | 2022-10-10 10:28:41 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | updatesalbyEno       | PROCEDURE | root@localhost | 2022-10-10 12:01:17 | 2022-10-10 12:01:17 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| test | update_sal_jobwise   | PROCEDURE | root@localhost | 2022-10-11 11:55:15 | 2022-10-11 11:55:15 | DEFINER       |         | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
++------+----------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+40 rows in set (0.03 sec)
+
+mysql> show create procedure myproc;
+    -> //
++-----------+--------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| Procedure | sql_mode                                   | Create Procedure                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | character_set_client | collation_connection | Database Collation |
++-----------+--------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+| myproc    | STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION | CREATE DEFINER=`root`@`localhost` PROCEDURE `myproc`()
+Begin
+Declare vempno,vdeptno int;
+Declare vename,vjob, vstatus varchar(20);
+Declare vsal,vavg decimal(9,2);
+Declare vset int default 0;
+Declare empcur cursor for select empno,ename,job,sal,deptno from emp;
+Declare continue handler for not found set vset=1;
+
+Open empcur;
+label1:loop
+Fetch empcur into vempno,vename,vjob,vsal,vdeptno;
+If vset=1 then
+     Leave label1;
+End if;
+Select avg(sal) into vavg
+From emp
+Where deptno=vdeptno;
+If vsal > vavg then
+     Set vstatus ='greater';
+Elseif vsal < vavg then
+          Set vstatus ='lesser';
+Else
+      Set vstatus ='equal';
+End if;
+Select vempno,vename,vsal,vjob,vdeptno,vavg,vstatus;
+End loop;
+Close empcur;
+End | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
++-----------+--------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> Create function calculatenetsal(psal decimal(9,2),pcomm decimal(9,2)) returns decimal(9,2)
+    -> Begin
+    ->      Return psal+psal*0.10+psal*0.15-psal*0.08+ifnull(pcomm,0);
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select ename,sal,comm,calculatenetsal(sal,comm)
+    -> from emp;
+    -> //
++--------+----------+---------+---------------------------+
+| ename  | sal      | comm    | calculatenetsal(sal,comm) |
++--------+----------+---------+---------------------------+
+| SMITH  |  1100.00 |    NULL |                   1287.00 |
+| ALLEN  |  1600.00 |  300.00 |                   2172.00 |
+| WARD   |  1250.00 |  500.00 |                   1962.50 |
+| JONES  |  2975.00 |    NULL |                   3480.75 |
+| MARTIN |  1250.00 | 1400.00 |                   2862.50 |
+| BLAKE  |  2850.00 |    NULL |                   3334.50 |
+| CLARK  |  2450.00 |    NULL |                   2866.50 |
+| SCOTT  |  3000.00 |    NULL |                   3510.00 |
+| KING   |  5000.00 |    NULL |                   5850.00 |
+| TURNER |  1500.00 |    0.00 |                   1755.00 |
+| ADAMS  |  1100.00 |    NULL |                   1287.00 |
+| JAMES  |   950.00 |    NULL |                   1111.50 |
+| FORD   |  3000.00 |    NULL |                   3510.00 |
+| MILLER |  1300.00 |    NULL |                   1521.00 |
+| Rajan  | 34567.00 | 3456.00 |                  43899.39 |
+| xxxx   |  3456.00 |  456.00 |                   4499.52 |
+| xxxx   |  3456.00 |  456.00 |                   4499.52 |
++--------+----------+---------+---------------------------+
+17 rows in set (0.00 sec)
+
+mysql> desc product;
+    -> ;//
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| pid   | int          | YES  |     | NULL    |       |
+| pname | varchar(25)  | YES  |     | NULL    |       |
+| qty   | int          | YES  |     | NULL    |       |
+| price | decimal(9,2) | YES  |     | NULL    |       |
+| cid   | int          | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> desc faculty//
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| fid        | int         | NO   | PRI | NULL    |       |
+| fname      | varchar(30) | YES  |     | NULL    |       |
+| experience | int         | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from faculty;
+    -> //
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
++-----+------------+------------+
+1 row in set (0.01 sec)
+
+mysql> delimiter //
+mysql> insert into faculty values(101,'bakul',10);
+    -> //
+ERROR 1062 (23000): Duplicate entry '101' for key 'faculty.PRIMARY'
+mysql> create procedure ins_faculty(pfid int,pfname varchar(20),pexp int)
+    -> begin
+    ->     declare exit handler for SQLEXCEPTION select "error occured";
+    ->     insert into faculty values(pfid,pfname,pexp);
+    ->     select * from faculty;
+    -> end//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call ins_faculty(102,'bakul',11);
+    -> //
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
+| 102 | bakul      |         11 |
++-----+------------+------------+
+2 rows in set (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call ins_faculty(102,'bakul',11);//
++---------------+
+| error occured |
++---------------+
+| error occured |
++---------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> drop ins_faculty;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ins_faculty' at line 1
+mysql> drop procedure ins_faculty;//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create procedure ins_faculty(pfid int,pfname varchar(20),pexp int)
+    -> begin
+    ->     declare continue handler for SQLEXCEPTION select "error occured";
+    ->     insert into faculty values(pfid,pfname,pexp);
+    ->     select * from faculty;
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call ins_faculty(102,'bakul',11);//
++---------------+
+| error occured |
++---------------+
+| error occured |
++---------------+
+1 row in set (0.00 sec)
+
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
+| 102 | bakul      |         11 |
++-----+------------+------------+
+2 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop procedure ins_faculty;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create procedure ins_faculty(pfid int,pfname varchar(20),pexp int)
+    -> begin
+    ->     declare continue handler for 1062 select "duplicate entry pls check";
+    ->     insert into faculty values(pfid,pfname,pexp);
+    ->     declare continue handler for SQLEXCEPTION select "error occured";
+    ->     insert into faculty values(pfid,pfname,pexp);
+    ->     select * from faculty;
+    -> end//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'declare continue handler for SQLEXCEPTION select "error occured";
+    insert int' at line 5
+mysql> create procedure ins_faculty(pfid int,pfname varchar(20),pexp int)
+    -> begin
+    ->      declare continue handler for 1062 select "duplicate entry pls check";
+    ->      declare continue handler for SQLEXCEPTION select "error occured";
+    ->      insert into faculty values(pfid,pfname,pexp);
+    ->     select * from faculty;
+    -> end//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call ins_faculty(102,'bakul',11);//
++---------------------------+
+| duplicate entry pls check |
++---------------------------+
+| duplicate entry pls check |
++---------------------------+
+1 row in set (0.01 sec)
+
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
+| 102 | bakul      |         11 |
++-----+------------+------------+
+2 rows in set (0.01 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>

@@ -1,0 +1,43 @@
+delimiter //
+create procedure display_status()
+begin
+declare vset int default 0;
+declare vempno int;
+declare vename varchar(20);
+declare vjob varchar(20);
+declare vsal double(9,2);
+declare status varchar(20);
+declare vdeptno int;
+declare vavg double(9,2);
+declare empcur cursor for 
+select empno , ename , job , sal , deptno
+from emp;
+declare continue handler for not found set vset = 1;
+
+open empcur;
+lable1: loop
+fetch empcur into vempno , vename , vjob , vsal , vdeptno;
+
+if vset=1 then
+set status = 'Emp table is empty if there is no matching record';
+leave lable1;
+
+end if;
+select avg(sal) into vavg 
+from emp
+where deptno = vdeptno;
+
+if vavg < vsal then
+set status = 'Greater';
+
+elseif vavg > vsal then
+set status = 'Smaller';
+
+else
+set status = 'Equal';
+
+end if;
+select vempno , vename , vjob , vsal , status , vdeptno;
+end loop;
+close empcur;
+end//

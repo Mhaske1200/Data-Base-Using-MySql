@@ -1,0 +1,38 @@
+delimiter //
+create procedure update_sal()
+begin
+	declare vset int default 0;
+	declare vhiredate date;
+	declare vexp , vempno int;
+	declare vsal , vupdatedsal decimal (9,2);
+	declare vename varchar(20);
+
+declare empcur cursor for select empno, ename, sal, hiredate
+from emp;
+declare continue handler for not found set vset = 1;
+	open empcur;
+	lable1:loop
+	fetch empcur into vempno, vename, vsal, vhiredate;
+	if vset = 1 then
+	leave lable1 ;
+	End if;
+	set vexp = floor(datediff(curdate() , vhiredate)/365);
+	if vexp < 36 then
+		select 'No Update';
+	elseif vexp < 39 then 
+		update emp
+		set sal = vsal*1.20
+		where empno = vempno;
+	else 
+		update emp
+		set sal = vsal*1.25
+		where empno = vempno;
+	End if;
+
+	select vempno , vename , vsal , vhiredate , vexp;
+
+	end loop;
+	close empcur;
+	end // 
+	delimiter ;
+	

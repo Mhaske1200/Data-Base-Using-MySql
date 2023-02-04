@@ -1,0 +1,40 @@
+create table emp_allowance1 
+(
+	empno int,
+	ename varchar(20),
+	hiredate date,
+	experience int,
+	allowance decimal(9,2)
+);
+delimiter //
+Create procedure allowance_exp1()
+Begin
+	declare vset int default 0;
+	declare vempno, vexp int;
+	declare vename varchar(20);
+	declare vsal decimal(9,2);
+	declare vhiredate date;
+	declare vallowance decimal(9,2);
+declare empcur cursor for select empno, ename, sal, hiredate
+	from emp;
+declare continue handler for not found 
+	set vset = 1;
+open empcur;
+lable1: loop
+	Fetch empcur into vempno, vename, vsal, vhiredate;
+
+	if vset =1 then 
+	leave lable1;
+	End if;	
+
+	 
+	set vexp = year_exp(vhiredate);
+	set vallowance  = (year_exp(vhiredate) * 3000 );
+
+insert into emp_allowance1 values(vempno, vename, vhiredate , vexp, vallowance);	
+
+	
+
+End loop;
+close empcur;
+end//

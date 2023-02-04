@@ -1,0 +1,27 @@
+create table empaudit(
+	empno int,
+	ename varchar(20),
+	username varchar(20),
+	chdate date,
+	action varchar(20));
+
+create trigger insert_emp_audit
+Before insert on emp for each row
+Begin 
+	Insert into empaudit values(new.empno,
+	new.ename, current_user() , curdate() , 'before insert' );
+end //
+
+create trigger update_emp_audit
+Before update on emp for each row
+Begin 
+	Insert into empaudit values(old.empno,
+	old.ename, current_user() , curdate() , 'before update' );
+end //
+
+create trigger delete_emp_audit
+Before delete on emp for each row
+Begin 
+	Insert into empaudit values(old.empno,
+	old.ename, current_user() , curdate() , 'before delete' );
+end //

@@ -1,0 +1,138 @@
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 28
+Server version: 8.0.31 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test;
+Database changed
+mysql> create table Faculty(
+    -> fid int primary key not null,
+    -> fname varchar(20) not null,
+    -> sp.skill1 varchar(20),
+    -> sp.skill2 varchar(20));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near '.skil
+l1 varchar(20),
+sp.skill2 varchar(20))' at line 4
+mysql> create table Faculty(
+    -> fid int primary key not null,
+    -> fname varchar(20) not null,
+    -> sp_skill1 varchar(20),
+    -> sp_skill2 varchar(20));
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> create table room(
+    -> roomid int primary key,
+    -> rname varchar(20),
+    -> rloc varchar(20));
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> create table courses(
+    -> cid int primary key;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near '' at
+line 2
+mysql> ^C
+mysql> create table courses(
+    -> cid int primary key,
+    -> cname varchar(20),
+    -> rid int,
+    -> fid int,
+    -> constraint fk_rid foreign key(rid) references room (roomid),
+    -> constraint fk_fid foreign key(fid) references faculty (fid));
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> insert into faculty values (10 , "Bakul" , "a" , "b");
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into faculty values (11 , "Trupti" , "x" , "z");
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into faculty values (12 , "Dhanashree" , "a" , "x");
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into faculty values (13 , "Kishori" , "a" , "b");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into room values (100 , "Jasmin" ,"1st Floor");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into room values (101 , "Rose" ,"2nd Floor");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into room values (105 , "Lotus" ,"1st Floor");
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into room values (103 , "Mogra" ,"1st Floor");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select * room;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that
+corresponds to your MySQL server version for the right syntax to use near 'room'
+ at line 1
+mysql> select * from room;
++--------+--------+-----------+
+| roomid | rname  | rloc      |
++--------+--------+-----------+
+|    100 | Jasmin | 1st Floor |
+|    101 | Rose   | 2nd Floor |
+|    103 | Mogra  | 1st Floor |
+|    105 | Lotus  | 1st Floor |
++--------+--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from faculty;
++-----+------------+-----------+-----------+
+| fid | fname      | sp_skill1 | sp_skill2 |
++-----+------------+-----------+-----------+
+|  10 | Bakul      | a         | b         |
+|  11 | Trupti     | x         | z         |
+|  12 | Dhanashree | a         | x         |
+|  13 | Kishori    | a         | b         |
++-----+------------+-----------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> insert into courses values (121 , "DBDA" ,100 , 10);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into courses values (131 , "DAC" ,101);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into courses values (131 , "DAC" ,101 , null);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into courses values (141 , "DTISS" ,null , null);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into courses values (151 , "DIOT" ,105 , 12);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select * from courses;
++-----+-------+------+------+
+| cid | cname | rid  | fid  |
++-----+-------+------+------+
+| 121 | DBDA  |  100 |   10 |
+| 131 | DAC   |  101 | NULL |
+| 141 | DTISS | NULL | NULL |
+| 151 | DIOT  |  105 |   12 |
++-----+-------+------+------+
+4 rows in set (0.00 sec)
+
+mysql> select *
+    -> from courses
+    -> where rid is null;
++-----+-------+------+------+
+| cid | cname | rid  | fid  |
++-----+-------+------+------+
+| 141 | DTISS | NULL | NULL |
++-----+-------+------+------+
+1 row in set (0.02 sec)
+
+mysql>

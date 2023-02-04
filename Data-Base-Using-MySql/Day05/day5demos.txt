@@ -1,0 +1,909 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test;
+Database changed
+mysql> select curdate();
++------------+
+| curdate()  |
++------------+
+| 2022-11-01 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select last_day(curdate());
++---------------------+
+| last_day(curdate()) |
++---------------------+
+| 2022-11-30          |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_sub(curdate(),interval 3 month);
++--------------------------------------+
+| date_sub(curdate(),interval 3 month) |
++--------------------------------------+
+| 2022-08-01                           |
++--------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select last_day(date_sub(curdate(),interval 3 month));
++------------------------------------------------+
+| last_day(date_sub(curdate(),interval 3 month)) |
++------------------------------------------------+
+| 2022-08-31                                     |
++------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_add(last_day(date_sub(curdate(),interval 3 month)),interval 1 day);
++-------------------------------------------------------------------------+
+| date_add(last_day(date_sub(curdate(),interval 3 month)),interval 1 day) |
++-------------------------------------------------------------------------+
+| 2022-09-01                                                              |
++-------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_add(last_day(date_sub(curdate(),interval month(curdate()) month)),interval 1 day);
++----------------------------------------------------------------------------------------+
+| date_add(last_day(date_sub(curdate(),interval month(curdate()) month)),interval 1 day) |
++----------------------------------------------------------------------------------------+
+| 2022-01-01                                                                             |
++----------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_sub(curdate(),interval month(curdate()) month));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+mysql> select date_sub(curdate(),interval month(curdate()) month);
++-----------------------------------------------------+
+| date_sub(curdate(),interval month(curdate()) month) |
++-----------------------------------------------------+
+| 2021-12-01                                          |
++-----------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select last_day(date_sub(curdate(),interval month(curdate()) month));
++---------------------------------------------------------------+
+| last_day(date_sub(curdate(),interval month(curdate()) month)) |
++---------------------------------------------------------------+
+| 2021-12-31                                                    |
++---------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select concat(year(curdate()),'01-01');
++---------------------------------+
+| concat(year(curdate()),'01-01') |
++---------------------------------+
+| 202201-01                       |
++---------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select concat(year(curdate()),'-01-01');
++----------------------------------+
+| concat(year(curdate()),'-01-01') |
++----------------------------------+
+| 2022-01-01                       |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_format(now(),'%h, %i %s %p);
+    '> ^C
+mysql> select date_format(now(),'%h, %i %s %p');
++-----------------------------------+
+| date_format(now(),'%h, %i %s %p') |
++-----------------------------------+
+| 02, 21 45 PM                      |
++-----------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select date_format(now(),'%a %h, %i %s %p');
++--------------------------------------+
+| date_format(now(),'%a %h, %i %s %p') |
++--------------------------------------+
+| Tue 02, 22 19 PM                     |
++--------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from course;
+ERROR 1146 (42S02): Table 'test.course' doesn't exist
+mysql> create table course(
+    -> cid int primary key,
+    -> cname varchar(30),
+    -> size int);
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> create table faculty(
+    -> fid int primary key,
+    -> fname varchar(30),
+    -> experience int);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table course_faculty(
+    -> cid int,
+    -> fid int,
+    -> constraint pk_c_f primary key(cid,fid),
+    -> constraint fk_cid_1 foreign key(cid) references course(cid)
+    -> on delete cascade
+    -> on update cascade,
+    -> constraint fk_fid_1 foreign key(fid) references faculty(fid)
+    -> on delete cascade
+    -> on update cascade);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into course values(10,'java',240);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into course values(11,'cpp',400);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into faculty values(100,'Bakul',15);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into faculty values(101,'Dhanashree',7);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  10 | java  |  240 |
+|  11 | cpp   |  400 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from faculty;
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 100 | Bakul      |         15 |
+| 101 | Dhanashree |          7 |
++-----+------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into course_faculty values(10,100)
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into course_faculty values(10,101)
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into course_faculty values(11,101)
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into course_faculty values(10,101)
+    -> ;
+ERROR 1062 (23000): Duplicate entry '10-101' for key 'course_faculty.PRIMARY'
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  10 | 100 |
+|  10 | 101 |
+|  11 | 101 |
++-----+-----+
+3 rows in set (0.00 sec)
+
+mysql> update course
+    -> set cid=25
+    -> where cid=10;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  25 | 100 |
+|  11 | 101 |
+|  25 | 101 |
++-----+-----+
+3 rows in set (0.00 sec)
+
+mysql> delete from faculty
+    -> where fid=100;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
+|  25 | 101 |
++-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> create table mytab_3(
+    -> id int primary key,
+    -> name varchar(20));
+ERROR 1050 (42S01): Table 'mytab_3' already exists
+mysql> drop table mytab_3;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table mytab_3(
+    -> id int primary key,
+    -> name varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table mychild_3(
+    -> cid int primary key,
+    -> data int,
+    -> constraint fk_id foreign key(data) references mytab_3(id)
+    -> on update cascade
+    -> on delete set null);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into mytab_3 values(10,'xxx');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into mytab_3 values(11,'yyyy');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into mychild_3 values(1,10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into mychild_3 values(2,10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into mychild_3 values(3,11);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into mychild_3 values(4,11);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| id | name |
++----+------+
+| 10 | xxx  |
+| 11 | yyyy |
++----+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from mychild_3;
++-----+------+
+| cid | data |
++-----+------+
+|   1 |   10 |
+|   2 |   10 |
+|   3 |   11 |
+|   4 |   11 |
++-----+------+
+4 rows in set (0.00 sec)
+
+mysql> update mytab_3
+    -> set id=1000 where id=10;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from mychild_3;
++-----+------+
+| cid | data |
++-----+------+
+|   3 |   11 |
+|   4 |   11 |
+|   1 | 1000 |
+|   2 | 1000 |
++-----+------+
+4 rows in set (0.00 sec)
+
+mysql> update mytab_3
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> delete from mytab_3
+    -> where id=1000;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| id | name |
++----+------+
+| 11 | yyyy |
++----+------+
+1 row in set (0.00 sec)
+
+mysql> select * from mychild_3;
++-----+------+
+| cid | data |
++-----+------+
+|   1 | NULL |
+|   2 | NULL |
+|   3 |   11 |
+|   4 |   11 |
++-----+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> create table course_backup as
+    -> (select * from course);
+Query OK, 2 rows affected (0.06 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from course_backup;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> create table course_back
+    -> (select *
+    -> from course
+    -> where 1=2)
+    -> ;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from course_back;
+Empty set (0.00 sec)
+
+mysql> desc course_back;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cid   | int         | NO   |     | NULL    |       |
+| cname | varchar(30) | YES  |     | NULL    |       |
+| size  | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> show create table
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> show query create table;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'query create table' at line 1
+mysql> create table mytab_4(
+    -> id int primary key auto_increment,
+    -> nm varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into mytab_4 values(default,'xxxx);
+    '> ;
+    '> ^C
+mysql> insert into mytab_4 values(default,'xxxx');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from mytab4;
+ERROR 1146 (42S02): Table 'test.mytab4' doesn't exist
+mysql> select * from mytab_4;
++----+------+
+| id | nm   |
++----+------+
+|  1 | xxxx |
++----+------+
+1 row in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> auto_increment=1001;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into mytab_4 values(default,'yyy');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab4_4;
+ERROR 1146 (42S02): Table 'test.mytab4_4' doesn't exist
+mysql> select * from mytab_4;
++------+------+
+| id   | nm   |
++------+------+
+|    1 | xxxx |
+| 1001 | yyy  |
++------+------+
+2 rows in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> add addr varchar(30);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc mytab_4;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| nm    | varchar(20) | YES  |     | NULL    |                |
+| addr  | varchar(30) | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> modify addr varchar(50);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc mytab_4;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| nm    | varchar(20) | YES  |     | NULL    |                |
+| addr  | varchar(50) | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> add email varchar(30) not null;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from mytab_4
+    -> ;
++------+------+------+-------+
+| id   | nm   | addr | email |
++------+------+------+-------+
+|    1 | xxxx | NULL |       |
+| 1001 | yyy  | NULL |       |
++------+------+------+-------+
+2 rows in set (0.00 sec)
+
+mysql> update mytab_4
+    -> set email='xxx@kdfjh.com
+    '> where id=1;
+    '>
+    '> ^C
+mysql> update mytab_4
+    -> set email='xxx@kdfjh.com'
+    -> where id=1;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from mytab_4
+    -> ;
++------+------+------+---------------+
+| id   | nm   | addr | email         |
++------+------+------+---------------+
+|    1 | xxxx | NULL | xxx@kdfjh.com |
+| 1001 | yyy  | NULL |               |
++------+------+------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> update mytab_4
+    -> set email='yyyy@kdfjh.com'
+    -> ;
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from myhtab_4;
+ERROR 1146 (42S02): Table 'test.myhtab_4' doesn't exist
+mysql> select * from mytab_4;
++------+------+------+----------------+
+| id   | nm   | addr | email          |
++------+------+------+----------------+
+|    1 | xxxx | NULL | yyyy@kdfjh.com |
+| 1001 | yyy  | NULL | yyyy@kdfjh.com |
++------+------+------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> modify email varchar(30) not  null;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table mytab_4
+    -> drop column addr;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from mytab_4;
++------+------+----------------+
+| id   | nm   | email          |
++------+------+----------------+
+|    1 | xxxx | yyyy@kdfjh.com |
+| 1001 | yyy  | yyyy@kdfjh.com |
++------+------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> alter table mytab_4
+    -> rename email to emai_info;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'to emai_info' at line 2
+mysql> alter table mytab_4
+    -> change column email emailinfo;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> alter table mytab_4
+    -> change email emailinfo;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> alter table mytab_4
+    -> change column email email_info varchar(30);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table mytab_4
+    -> rename to mytab_51;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from mytab_4;
+ERROR 1146 (42S02): Table 'test.mytab_4' doesn't exist
+mysql> select * from mytab_51;
++------+------+----------------+
+| id   | nm   | email_info     |
++------+------+----------------+
+|    1 | xxxx | yyyy@kdfjh.com |
+| 1001 | yyy  | yyyy@kdfjh.com |
++------+------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> desc mytab_51;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| nm         | varchar(20) | YES  |     | NULL    |                |
+| email_info | varchar(30) | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table mytable_51
+    -> drop;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> alter table mytab_51
+    -> drop primary key;
+ERROR 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key
+mysql> desc worker;
++--------------+----------+------+-----+---------+----------------+
+| Field        | Type     | Null | Key | Default | Extra          |
++--------------+----------+------+-----+---------+----------------+
+| WORKER_ID    | int      | NO   | PRI | NULL    | auto_increment |
+| FIRST_NAME   | char(25) | YES  |     | NULL    |                |
+| LAST_NAME    | char(25) | YES  |     | NULL    |                |
+| SALARY       | int      | YES  |     | NULL    |                |
+| JOINING_DATE | datetime | YES  |     | NULL    |                |
+| DEPARTMENT   | char(25) | YES  |     | NULL    |                |
++--------------+----------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc product_2
+    -> ;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| Prodid  | int          | NO   | PRI | NULL    |       |
+| Pname   | varchar(30)  | NO   | UNI | NULL    |       |
+| Qty     | int          | YES  |     | 10      |       |
+| Price   | decimal(9,2) | YES  |     | NULL    |       |
+| Mfgdate | date         | YES  |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table product_2
+    -> drop primary key;
+Query OK, 3 rows affected (0.07 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> alter table course_faculty
+    -> drop constarint fk_fid_1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'fk_fid_1' at line 2
+mysql> alter table course_faculty
+    -> drop constraint fk_fid_1;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from faculty;
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
++-----+------------+------------+
+1 row in set (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
+|  25 | 101 |
++-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> insert into course_faculty values(11,2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+------+
+| cid | fid  |
++-----+------+
+|  11 |  101 |
+|  25 |  101 |
+|  11 | 2000 |
++-----+------+
+3 rows in set (0.00 sec)
+
+mysql> delete from course_faculty where fid=2000;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
+|  25 | 101 |
++-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> desc course_faculty;
++-------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++-------+------+------+-----+---------+-------+
+| cid   | int  | NO   | PRI | NULL    |       |
+| fid   | int  | NO   | PRI | NULL    |       |
++-------+------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> alter table course_faculty
+    -> add constraint fk_fid_23 foreign key(fid) references faculty(fid);
+Query OK, 2 rows affected (0.09 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into course_faculty values(11,2000);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`test`.`course_faculty`, CONSTRAINT `fk_fid_23` FOREIGN KEY (`fid`) REFERENCES `faculty` (`fid`))
+mysql> show create table product;
++---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table                                                                                                                                                                                                                                      |
++---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| product | CREATE TABLE `product` (
+  `pid` int DEFAULT NULL,
+  `pname` varchar(25) DEFAULT NULL,
+  `qty` int DEFAULT NULL,
+  `price` decimal(9,2) DEFAULT NULL,
+  `cid` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> show create table course_faculty;
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table          | Create Table                                                                                                                                                                                                                                                                                                                                                                                  |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| course_faculty | CREATE TABLE `course_faculty` (
+  `cid` int NOT NULL,
+  `fid` int NOT NULL,
+  PRIMARY KEY (`cid`,`fid`),
+  KEY `fk_fid_23` (`fid`),
+  CONSTRAINT `fk_cid_1` FOREIGN KEY (`cid`) REFERENCES `course` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_fid_23` FOREIGN KEY (`fid`) REFERENCES `faculty` (`fid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from mytab_51;
++------+------+----------------+
+| id   | nm   | email_info     |
++------+------+----------------+
+|    1 | xxxx | yyyy@kdfjh.com |
+| 1001 | yyy  | yyyy@kdfjh.com |
++------+------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> set autocommit=0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into mytab_51 values(13,'sdfsd','sdfs')
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab_51;
++------+-------+----------------+
+| id   | nm    | email_info     |
++------+-------+----------------+
+|    1 | xxxx  | yyyy@kdfjh.com |
+|   13 | sdfsd | sdfs           |
+| 1001 | yyy   | yyyy@kdfjh.com |
++------+-------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from mytab_51;
++------+------+----------------+
+| id   | nm   | email_info     |
++------+------+----------------+
+|    1 | xxxx | yyyy@kdfjh.com |
+| 1001 | yyy  | yyyy@kdfjh.com |
++------+------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into mytab_51 values(13,'sdfsd','sdfs')
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into mytab_51 values(14,'sdfsd','sdfs');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into mytab_51 values(15,'sdfsd','sdfs');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> savepoint A
+    -> ;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into mytab_51 values(16,'sdfsd','sdfs');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into mytab_51 values(17,'sdfsd','sdfs');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from myhtab_+51;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '+51' at line 1
+mysql> select * from myhtab_51;
+ERROR 1146 (42S02): Table 'test.myhtab_51' doesn't exist
+mysql> select * from mytab_51;
++------+-------+----------------+
+| id   | nm    | email_info     |
++------+-------+----------------+
+|    1 | xxxx  | yyyy@kdfjh.com |
+|   13 | sdfsd | sdfs           |
+|   14 | sdfsd | sdfs           |
+|   15 | sdfsd | sdfs           |
+|   16 | sdfsd | sdfs           |
+|   17 | sdfsd | sdfs           |
+| 1001 | yyy   | yyyy@kdfjh.com |
++------+-------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> rollback to A;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from mytab_51;
++------+-------+----------------+
+| id   | nm    | email_info     |
++------+-------+----------------+
+|    1 | xxxx  | yyyy@kdfjh.com |
+|   13 | sdfsd | sdfs           |
+|   14 | sdfsd | sdfs           |
+|   15 | sdfsd | sdfs           |
+| 1001 | yyy   | yyyy@kdfjh.com |
++------+-------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from mytab_51;
++------+-------+----------------+
+| id   | nm    | email_info     |
++------+-------+----------------+
+|    1 | xxxx  | yyyy@kdfjh.com |
+|   13 | sdfsd | sdfs           |
+|   14 | sdfsd | sdfs           |
+|   15 | sdfsd | sdfs           |
+| 1001 | yyy   | yyyy@kdfjh.com |
++------+-------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from mytab_51;
++------+-------+----------------+
+| id   | nm    | email_info     |
++------+-------+----------------+
+|    1 | xxxx  | yyyy@kdfjh.com |
+|   13 | sdfsd | sdfs           |
+|   14 | sdfsd | sdfs           |
+|   15 | sdfsd | sdfs           |
+| 1001 | yyy   | yyyy@kdfjh.com |
++------+-------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |   800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select empno,ename,comm, case when comm is null then 'need improvement'
+    -> when comm=0 then 'need improvement'
+    -> when comm<500 then ' ok'
+    -> when comm>=500 and comm <1000 then 'good'
+    -> else 'excellent' end  remark
+    -> from emp;
++-------+--------+---------+------------------+
+| empno | ename  | comm    | remark           |
++-------+--------+---------+------------------+
+|  7369 | SMITH  |    NULL | need improvement |
+|  7499 | ALLEN  |  300.00 |  ok              |
+|  7521 | WARD   |  500.00 | good             |
+|  7566 | JONES  |    NULL | need improvement |
+|  7654 | MARTIN | 1400.00 | excellent        |
+|  7698 | BLAKE  |    NULL | need improvement |
+|  7782 | CLARK  |    NULL | need improvement |
+|  7788 | SCOTT  |    NULL | need improvement |
+|  7839 | KING   |    NULL | need improvement |
+|  7844 | TURNER |    0.00 | need improvement |
+|  7876 | ADAMS  |    NULL | need improvement |
+|  7900 | JAMES  |    NULL | need improvement |
+|  7902 | FORD   |    NULL | need improvement |
+|  7934 | MILLER |    NULL | need improvement |
+|   123 | Rajan  | 3456.00 | excellent        |
++-------+--------+---------+------------------+
+15 rows in set (0.00 sec)
+
+19 no assinment mysql>19
+mysql> select first_name,joining_date,year(curdate())-year(joining_date)'employee'
+    -> from worker
+    -> order by first_name;
++------------+---------------------+----------+
+| first_name | joining_date        | employee |
++------------+---------------------+----------+
+| Amitabh    | 2014-02-20 09:00:00 |        8 |
+| Geetika    | 2014-04-11 09:00:00 |        8 |
+| Monika     | 2014-02-20 09:00:00 |        8 |
+| Niharika   | 2014-06-11 09:00:00 |        8 |
+| Rahul      | 2022-04-02 00:00:00 |        0 |
+| Rahul      | 2018-02-04 00:00:00 |        4 |
+| Ravi       | 2011-04-02 00:00:00 |       11 |
+| Satish     | 2014-01-20 09:00:00 |        8 |
+| Sunil      | 2020-05-01 00:00:00 |        2 |
+| Vipul      | 2014-06-11 09:00:00 |        8 |
+| Virat      | 2012-05-01 00:00:00 |       10 |
+| Vishal     | 2014-02-20 09:00:00 |        8 |
+| Vivek      | 2014-06-11 09:00:00 |        8 |
++------------+---------------------+----------+
+13 rows in set (0.00 sec)
+20. no assignment
+mysql> select deptno,year(hiredate)'hiredate_year',count(*)'count'
+    -> from emp
+    -> group by year(hiredate);
++--------+---------------+-------+
+| deptno | hiredate_year | count |
++--------+---------------+-------+
+|     20 |          1980 |     1 |
+|     30 |          1981 |    10 |
+|     20 |          1982 |     2 |
+|     20 |          1983 |     1 |
++--------+---------------+-------+

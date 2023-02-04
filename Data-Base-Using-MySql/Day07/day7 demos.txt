@@ -1,0 +1,264 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 13
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test;
+Database changed
+mysql> show tables
+    -> ;
++----------------------+
+| Tables_in_test       |
++----------------------+
+| account_2            |
+| address              |
+| addressmany          |
+| addressmany1         |
+| addresstab1          |
+| addresstab1_usertab1 |
+| allemp               |
+| bonus                |
+| booking              |
+| category             |
+| category1            |
+| course               |
+| course_back          |
+| course_backup        |
+| course_faculty       |
+| customer             |
+| customer_2           |
+| custtab1             |
+| custtab11            |
+| department           |
+| dept                 |
+| dept_info            |
+| dummy                |
+| emp                  |
+| emp_india            |
+| emp_japan            |
+| emp_us               |
+| employee             |
+| employee_history     |
+| emptab1              |
+| emptab11             |
+| event                |
+| faculty              |
+| hibernate_sequence   |
+| mgr10                |
+| mychild_3            |
+| myemployee           |
+| myprod11             |
+| myprodtab            |
+| myprodtab22          |
+| myprodtab33          |
+| myprodtab44          |
+| myproduct            |
+| myproduct_table      |
+| myproducttable       |
+| mystud               |
+| mytab_3              |
+| mytab_51             |
+| mytext               |
+| myuser               |
+| myuser12             |
+| nonperishableprod    |
+| orderitem            |
+| perishableprod       |
+| persontab            |
+| pertab11             |
+| product              |
+| product_2            |
+| product_analysis     |
+| quetions             |
+| salgrade             |
+| student              |
+| student_2            |
+| student_3            |
+| studentiacsd         |
+| user                 |
+| useraddress          |
+| userentity           |
+| usermany             |
+| usermany1            |
+| usertab              |
+| usertab1             |
+| worker               |
++----------------------+
+73 rows in set (0.01 sec)
+
+mysql> select * from emp_india;
++------+---------+----------+
+| id   | name    | location |
++------+---------+----------+
+|  103 | Shivesh | India    |
+|  104 | Shivali | India    |
++------+---------+----------+
+2 rows in set (0.01 sec)
+
+mysql> select * from emp_us;
++------+---------+----------+
+| id   | name    | location |
++------+---------+----------+
+|  100 | Rajan   | India    |
+|  101 | Rajat   | US       |
+|  103 | Shivesh | India    |
++------+---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from emp_japan
+    -> ;
++------+---------+----------+
+| id   | name    | location |
++------+---------+----------+
+|  103 | Shivesh | India    |
+|  104 | Ashish  | Japan    |
++------+---------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from emp_india
+    -> union
+    -> select * from emp_us
+    -> union
+    -> select * from emp_japan;
++------+---------+----------+
+| id   | name    | location |
++------+---------+----------+
+|  103 | Shivesh | India    |
+|  104 | Shivali | India    |
+|  100 | Rajan   | India    |
+|  101 | Rajat   | US       |
+|  104 | Ashish  | Japan    |
++------+---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from emp_india
+    -> ^C
+mysql> select * from emp_us
+    -> minus
+    -> select * from emp_india;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select * from emp_india' at line 3
+mysql> select * from emp_us
+    -> intersect
+    -> select * from emp_india;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select * from emp_india' at line 3
+mysql> Select deptno, ename,sal,max(sal) over (partition by deptno)
+    -> From emp;
++--------+--------+----------+-------------------------------------+
+| deptno | ename  | sal      | max(sal) over (partition by deptno) |
++--------+--------+----------+-------------------------------------+
+|     10 | CLARK  |  2450.00 |                            34567.00 |
+|     10 | KING   |  5000.00 |                            34567.00 |
+|     10 | MILLER |  1300.00 |                            34567.00 |
+|     10 | Rajan  | 34567.00 |                            34567.00 |
+|     20 | SMITH  |  1100.00 |                             3000.00 |
+|     20 | JONES  |  2975.00 |                             3000.00 |
+|     20 | SCOTT  |  3000.00 |                             3000.00 |
+|     20 | ADAMS  |  1100.00 |                             3000.00 |
+|     20 | FORD   |  3000.00 |                             3000.00 |
+|     30 | ALLEN  |  1600.00 |                             2850.00 |
+|     30 | WARD   |  1250.00 |                             2850.00 |
+|     30 | MARTIN |  1250.00 |                             2850.00 |
+|     30 | BLAKE  |  2850.00 |                             2850.00 |
+|     30 | TURNER |  1500.00 |                             2850.00 |
+|     30 | JAMES  |   950.00 |                             2850.00 |
++--------+--------+----------+-------------------------------------+
+15 rows in set (0.00 sec)
+
+mysql> select * from product;
++------+---------------+------+--------+------+
+| pid  | pname         | qty  | price  | cid  |
++------+---------------+------+--------+------+
+|    2 | Nachos123     |  302 | 150.00 |    1 |
+|    3 | Pringles123   |   29 | 150.00 |    1 |
+|    4 | Marie gold    |   20 |  50.00 |    2 |
+|    5 | nice1234      |   35 |  45.00 |    2 |
+|    6 | good day123   |   45 |  60.00 |    2 |
+|   20 | Hide and seek |   45 |  40.00 |    2 |
+|  145 | bread         |   30 | 100.00 |    2 |
+|  222 | Marie         |   45 |  45.00 |    2 |
+|   35 | 50-50         |   34 |  45.00 |    2 |
+|  111 | xxx           |   30 |  20.00 |    1 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|   12 | marie         |   23 |  34.00 |    4 |
+|  100 | aaaaa         |   41 |  51.00 |    1 |
++------+---------------+------+--------+------+
+13 rows in set (0.00 sec)
+
+mysql> select cid,avg(price)
+    -> from product
+    -> grouo by cid;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'by cid' at line 3
+mysql> select cid,avg(price)
+    -> from product
+    -> group by cid;
++------+------------+
+| cid  | avg(price) |
++------+------------+
+|    1 |  92.750000 |
+|    2 |  55.000000 |
+|    4 |  34.000000 |
++------+------------+
+3 rows in set (0.00 sec)
+
+mysql> select pid,pname,price,cid,avg(price) over(partion by cid)
+    -> from product;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'by cid)
+from product' at line 1
+mysql> select pid,pname,price,cid,avg(price) over(partition by cid)
+    -> from product;
++------+---------------+--------+------+-----------------------------------+
+| pid  | pname         | price  | cid  | avg(price) over(partition by cid) |
++------+---------------+--------+------+-----------------------------------+
+|    2 | Nachos123     | 150.00 |    1 |                         92.750000 |
+|    3 | Pringles123   | 150.00 |    1 |                         92.750000 |
+|  111 | xxx           |  20.00 |    1 |                         92.750000 |
+|  100 | aaaaa         |  51.00 |    1 |                         92.750000 |
+|    4 | Marie gold    |  50.00 |    2 |                         55.000000 |
+|    5 | nice1234      |  45.00 |    2 |                         55.000000 |
+|    6 | good day123   |  60.00 |    2 |                         55.000000 |
+|   20 | Hide and seek |  40.00 |    2 |                         55.000000 |
+|  145 | bread         | 100.00 |    2 |                         55.000000 |
+|  222 | Marie         |  45.00 |    2 |                         55.000000 |
+|   35 | 50-50         |  45.00 |    2 |                         55.000000 |
+|   12 | marie         |  34.00 |    4 |                         34.000000 |
+|   12 | marie         |  34.00 |    4 |                         34.000000 |
++------+---------------+--------+------+-----------------------------------+
+13 rows in set (0.00 sec)
+
+mysql> select pid,pname,price,cid,avg(price) over(partion by cid order by price)
+    -> from emp;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'by cid order by price)
+from emp' at line 1
+mysql> select pid,pname,price,cid,avg(price) over(partition by cid order by price)
+    -> from emp;
+ERROR 1054 (42S22): Unknown column 'pid' in 'field list'
+mysql> select pid,pname,price,cid,avg(price) over(partition by cid order by price)
+    -> from product;
++------+---------------+--------+------+--------------------------------------------------+
+| pid  | pname         | price  | cid  | avg(price) over(partition by cid order by price) |
++------+---------------+--------+------+--------------------------------------------------+
+|  111 | xxx           |  20.00 |    1 |                                        20.000000 |
+|  100 | aaaaa         |  51.00 |    1 |                                        35.500000 |
+|    2 | Nachos123     | 150.00 |    1 |                                        92.750000 |
+|    3 | Pringles123   | 150.00 |    1 |                                        92.750000 |
+|   20 | Hide and seek |  40.00 |    2 |                                        40.000000 |
+|    5 | nice1234      |  45.00 |    2 |                                        43.750000 |
+|  222 | Marie         |  45.00 |    2 |                                        43.750000 |
+|   35 | 50-50         |  45.00 |    2 |                                        43.750000 |
+|    4 | Marie gold    |  50.00 |    2 |                                        45.000000 |
+|    6 | good day123   |  60.00 |    2 |                                        47.500000 |
+|  145 | bread         | 100.00 |    2 |                                        55.000000 |
+|   12 | marie         |  34.00 |    4 |                                        34.000000 |
+|   12 | marie         |  34.00 |    4 |                                        34.000000 |
++------+---------------+--------+------+--------------------------------------------------+
+13 rows in set (0.00 sec)
+
+mysql>

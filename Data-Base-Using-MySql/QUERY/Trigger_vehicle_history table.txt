@@ -1,0 +1,16 @@
+create table vehicle_history(
+	vno int,
+	vname varchar(20),
+	oldprice decimal(9,2),
+	newprice decimal (9,2),
+	chdate date,
+	username varchar(20));
+----------------------------------------------------
+create trigger update_vehicle
+before update on vehicle for each row
+Begin 
+	insert into vehicle_history 
+	values(old.vid, old.vname, old.price,new.price,
+	curdate(),current_user());
+end//
+-------------------------------------------------------

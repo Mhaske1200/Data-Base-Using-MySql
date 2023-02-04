@@ -1,0 +1,1228 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test
+Database changed
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |   800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.01 sec)
+
+mysql> update emp
+    -> set sal=(select sal
+    ->          from (select * from emp ) e
+    ->          where ename='ADAMS')
+    -> where ename='SMITH';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> set autocommit=0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from emp
+    -> where deptno=(select deptno
+    ->               from (select * from emp ) e
+    ->               where ename='SMITH');
+Query OK, 5 rows affected (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+10 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> delete from emp
+    -> where sal > (select avg(sal)
+    ->              from (select * from emp) e
+    ->              where deptno=(select deptno
+    ->                            from (select * from emp) m
+    ->                            where ename='ALLEN'));
+Query OK, 8 rows affected (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 | 1100.00 |    NULL |     20 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+----------+------+------------+---------+---------+--------+
+7 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from dept;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.01 sec)
+
+mysql> select *
+    -> from dept d
+    -> where not exists (select *
+    ->               from emp e
+    ->               where e.deptno=d.deptno) ;
++--------+------------+--------+
+| DEPTNO | DNAME      | LOC    |
++--------+------------+--------+
+|     40 | OPERATIONS | BOSTON |
++--------+------------+--------+
+1 row in set (0.00 sec)
+
+mysql> select *
+    -> from dept d
+    -> where exists (select *
+    ->               from emp e
+    ->               where e.deptno=d.deptno) ;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
++--------+------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from emp e
+    -> ;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from emp m;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e
+    -> where not exists (select *
+    ->               from emp m
+    ->               where m.mgr=e.empno);
++-------+--------+----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+----------+------+------------+----------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select * from course
+    -> ;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.01 sec)
+
+mysql> select * from faculty
+    -> ;
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
++-----+------------+------------+
+1 row in set (0.02 sec)
+
+mysql> select * course_faculty;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'course_faculty' at line 1
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
+|  25 | 101 |
++-----+-----+
+2 rows in set (0.00 sec)
+
+mysql> delete from course_faculty where cid=25;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
++-----+-----+
+1 row in set (0.00 sec)
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select *
+    -> from course c
+    -> where not exists (select *
+    -> from course_faculty
+    -> cf where cf.cid=c.cid);
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  25 | java  |  240 |
++-----+-------+------+
+1 row in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,sal,job
+    -> ;
+ERROR 1054 (42S22): Unknown column 'empno' in 'field list'
+mysql> select empno,ename,e.deptno,d.deptno,d.dname,sal,job
+    -> from emp e,dept d;
++-------+--------+--------+--------+------------+----------+-----------+
+| empno | ename  | deptno | deptno | dname      | sal      | job       |
++-------+--------+--------+--------+------------+----------+-----------+
+|  7369 | SMITH  |     20 |     10 | ACCOUNTING |  1100.00 | CLERK     |
+|  7369 | SMITH  |     20 |     20 | RESEARCH   |  1100.00 | CLERK     |
+|  7369 | SMITH  |     20 |     30 | SALES      |  1100.00 | CLERK     |
+|  7369 | SMITH  |     20 |     40 | OPERATIONS |  1100.00 | CLERK     |
+|  7499 | ALLEN  |     30 |     10 | ACCOUNTING |  1600.00 | SALESMAN  |
+|  7499 | ALLEN  |     30 |     20 | RESEARCH   |  1600.00 | SALESMAN  |
+|  7499 | ALLEN  |     30 |     30 | SALES      |  1600.00 | SALESMAN  |
+|  7499 | ALLEN  |     30 |     40 | OPERATIONS |  1600.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     10 | ACCOUNTING |  1250.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     20 | RESEARCH   |  1250.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     30 | SALES      |  1250.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     40 | OPERATIONS |  1250.00 | SALESMAN  |
+|  7566 | JONES  |     20 |     10 | ACCOUNTING |  2975.00 | MANAGER   |
+|  7566 | JONES  |     20 |     20 | RESEARCH   |  2975.00 | MANAGER   |
+|  7566 | JONES  |     20 |     30 | SALES      |  2975.00 | MANAGER   |
+|  7566 | JONES  |     20 |     40 | OPERATIONS |  2975.00 | MANAGER   |
+|  7654 | MARTIN |     30 |     10 | ACCOUNTING |  1250.00 | SALESMAN  |
+|  7654 | MARTIN |     30 |     20 | RESEARCH   |  1250.00 | SALESMAN  |
+|  7654 | MARTIN |     30 |     30 | SALES      |  1250.00 | SALESMAN  |
+|  7654 | MARTIN |     30 |     40 | OPERATIONS |  1250.00 | SALESMAN  |
+|  7698 | BLAKE  |     30 |     10 | ACCOUNTING |  2850.00 | MANAGER   |
+|  7698 | BLAKE  |     30 |     20 | RESEARCH   |  2850.00 | MANAGER   |
+|  7698 | BLAKE  |     30 |     30 | SALES      |  2850.00 | MANAGER   |
+|  7698 | BLAKE  |     30 |     40 | OPERATIONS |  2850.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     10 | ACCOUNTING |  2450.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     20 | RESEARCH   |  2450.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     30 | SALES      |  2450.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     40 | OPERATIONS |  2450.00 | MANAGER   |
+|  7788 | SCOTT  |     20 |     10 | ACCOUNTING |  3000.00 | ANALYST   |
+|  7788 | SCOTT  |     20 |     20 | RESEARCH   |  3000.00 | ANALYST   |
+|  7788 | SCOTT  |     20 |     30 | SALES      |  3000.00 | ANALYST   |
+|  7788 | SCOTT  |     20 |     40 | OPERATIONS |  3000.00 | ANALYST   |
+|  7839 | KING   |     10 |     10 | ACCOUNTING |  5000.00 | PRESIDENT |
+|  7839 | KING   |     10 |     20 | RESEARCH   |  5000.00 | PRESIDENT |
+|  7839 | KING   |     10 |     30 | SALES      |  5000.00 | PRESIDENT |
+|  7839 | KING   |     10 |     40 | OPERATIONS |  5000.00 | PRESIDENT |
+|  7844 | TURNER |     30 |     10 | ACCOUNTING |  1500.00 | SALESMAN  |
+|  7844 | TURNER |     30 |     20 | RESEARCH   |  1500.00 | SALESMAN  |
+|  7844 | TURNER |     30 |     30 | SALES      |  1500.00 | SALESMAN  |
+|  7844 | TURNER |     30 |     40 | OPERATIONS |  1500.00 | SALESMAN  |
+|  7876 | ADAMS  |     20 |     10 | ACCOUNTING |  1100.00 | CLERK     |
+|  7876 | ADAMS  |     20 |     20 | RESEARCH   |  1100.00 | CLERK     |
+|  7876 | ADAMS  |     20 |     30 | SALES      |  1100.00 | CLERK     |
+|  7876 | ADAMS  |     20 |     40 | OPERATIONS |  1100.00 | CLERK     |
+|  7900 | JAMES  |     30 |     10 | ACCOUNTING |   950.00 | CLERK     |
+|  7900 | JAMES  |     30 |     20 | RESEARCH   |   950.00 | CLERK     |
+|  7900 | JAMES  |     30 |     30 | SALES      |   950.00 | CLERK     |
+|  7900 | JAMES  |     30 |     40 | OPERATIONS |   950.00 | CLERK     |
+|  7902 | FORD   |     20 |     10 | ACCOUNTING |  3000.00 | ANALYST   |
+|  7902 | FORD   |     20 |     20 | RESEARCH   |  3000.00 | ANALYST   |
+|  7902 | FORD   |     20 |     30 | SALES      |  3000.00 | ANALYST   |
+|  7902 | FORD   |     20 |     40 | OPERATIONS |  3000.00 | ANALYST   |
+|  7934 | MILLER |     10 |     10 | ACCOUNTING |  1300.00 | CLERK     |
+|  7934 | MILLER |     10 |     20 | RESEARCH   |  1300.00 | CLERK     |
+|  7934 | MILLER |     10 |     30 | SALES      |  1300.00 | CLERK     |
+|  7934 | MILLER |     10 |     40 | OPERATIONS |  1300.00 | CLERK     |
+|   123 | Rajan  |     10 |     10 | ACCOUNTING | 34567.00 | Designer  |
+|   123 | Rajan  |     10 |     20 | RESEARCH   | 34567.00 | Designer  |
+|   123 | Rajan  |     10 |     30 | SALES      | 34567.00 | Designer  |
+|   123 | Rajan  |     10 |     40 | OPERATIONS | 34567.00 | Designer  |
++-------+--------+--------+--------+------------+----------+-----------+
+60 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from dept;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,sal,job
+    -> from emp e,dept d
+    -> where e.deptno=d.deptno;
++-------+--------+--------+--------+----------+-----------+
+| empno | ename  | deptno | deptno | sal      | job       |
++-------+--------+--------+--------+----------+-----------+
+|  7369 | SMITH  |     20 |     20 |  1100.00 | CLERK     |
+|  7499 | ALLEN  |     30 |     30 |  1600.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     30 |  1250.00 | SALESMAN  |
+|  7566 | JONES  |     20 |     20 |  2975.00 | MANAGER   |
+|  7654 | MARTIN |     30 |     30 |  1250.00 | SALESMAN  |
+|  7698 | BLAKE  |     30 |     30 |  2850.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     10 |  2450.00 | MANAGER   |
+|  7788 | SCOTT  |     20 |     20 |  3000.00 | ANALYST   |
+|  7839 | KING   |     10 |     10 |  5000.00 | PRESIDENT |
+|  7844 | TURNER |     30 |     30 |  1500.00 | SALESMAN  |
+|  7876 | ADAMS  |     20 |     20 |  1100.00 | CLERK     |
+|  7900 | JAMES  |     30 |     30 |   950.00 | CLERK     |
+|  7902 | FORD   |     20 |     20 |  3000.00 | ANALYST   |
+|  7934 | MILLER |     10 |     10 |  1300.00 | CLERK     |
+|   123 | Rajan  |     10 |     10 | 34567.00 | Designer  |
++-------+--------+--------+--------+----------+-----------+
+15 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,dname,sal,job
+    -> from emp e,dept d
+    -> where e.deptno=d.deptno;
++-------+--------+--------+--------+------------+----------+-----------+
+| empno | ename  | deptno | deptno | dname      | sal      | job       |
++-------+--------+--------+--------+------------+----------+-----------+
+|  7369 | SMITH  |     20 |     20 | RESEARCH   |  1100.00 | CLERK     |
+|  7499 | ALLEN  |     30 |     30 | SALES      |  1600.00 | SALESMAN  |
+|  7521 | WARD   |     30 |     30 | SALES      |  1250.00 | SALESMAN  |
+|  7566 | JONES  |     20 |     20 | RESEARCH   |  2975.00 | MANAGER   |
+|  7654 | MARTIN |     30 |     30 | SALES      |  1250.00 | SALESMAN  |
+|  7698 | BLAKE  |     30 |     30 | SALES      |  2850.00 | MANAGER   |
+|  7782 | CLARK  |     10 |     10 | ACCOUNTING |  2450.00 | MANAGER   |
+|  7788 | SCOTT  |     20 |     20 | RESEARCH   |  3000.00 | ANALYST   |
+|  7839 | KING   |     10 |     10 | ACCOUNTING |  5000.00 | PRESIDENT |
+|  7844 | TURNER |     30 |     30 | SALES      |  1500.00 | SALESMAN  |
+|  7876 | ADAMS  |     20 |     20 | RESEARCH   |  1100.00 | CLERK     |
+|  7900 | JAMES  |     30 |     30 | SALES      |   950.00 | CLERK     |
+|  7902 | FORD   |     20 |     20 | RESEARCH   |  3000.00 | ANALYST   |
+|  7934 | MILLER |     10 |     10 | ACCOUNTING |  1300.00 | CLERK     |
+|   123 | Rajan  |     10 |     10 | ACCOUNTING | 34567.00 | Designer  |
++-------+--------+--------+--------+------------+----------+-----------+
+15 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from salgrade;
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e, salgrade s
+    -> ;
++-------+--------+-----------+------+------------+----------+---------+--------+-------+-------+-------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO | GRADE | LOSAL | HISAL |
++-------+--------+-----------+------+------------+----------+---------+--------+-------+-------+-------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |     2 |  1201 |  1400 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |     3 |  1401 |  2000 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |     5 |  3001 |  9999 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |     1 |   700 |  1200 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |     2 |  1201 |  1400 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |     3 |  1401 |  2000 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |     4 |  2001 |  3000 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |     5 |  3001 |  9999 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |     1 |   700 |  1200 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |     2 |  1201 |  1400 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |     3 |  1401 |  2000 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |     4 |  2001 |  3000 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |     5 |  3001 |  9999 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |     2 |  1201 |  1400 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |     3 |  1401 |  2000 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |     5 |  3001 |  9999 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |     1 |   700 |  1200 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |     2 |  1201 |  1400 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |     3 |  1401 |  2000 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |     4 |  2001 |  3000 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |     5 |  3001 |  9999 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |     1 |   700 |  1200 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |     2 |  1201 |  1400 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |     3 |  1401 |  2000 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |     4 |  2001 |  3000 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |     5 |  3001 |  9999 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |     1 |   700 |  1200 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |     2 |  1201 |  1400 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |     3 |  1401 |  2000 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |     4 |  2001 |  3000 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |     5 |  3001 |  9999 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |     2 |  1201 |  1400 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |     3 |  1401 |  2000 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |     5 |  3001 |  9999 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |     1 |   700 |  1200 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |     2 |  1201 |  1400 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |     3 |  1401 |  2000 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |     4 |  2001 |  3000 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |     5 |  3001 |  9999 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |     1 |   700 |  1200 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |     2 |  1201 |  1400 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |     3 |  1401 |  2000 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |     4 |  2001 |  3000 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |     5 |  3001 |  9999 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |     2 |  1201 |  1400 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |     3 |  1401 |  2000 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |     5 |  3001 |  9999 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |     1 |   700 |  1200 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |     2 |  1201 |  1400 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |     3 |  1401 |  2000 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |     4 |  2001 |  3000 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |     5 |  3001 |  9999 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |     2 |  1201 |  1400 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |     3 |  1401 |  2000 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |     5 |  3001 |  9999 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |     1 |   700 |  1200 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |     2 |  1201 |  1400 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |     3 |  1401 |  2000 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |     4 |  2001 |  3000 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |     5 |  3001 |  9999 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |     1 |   700 |  1200 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |     2 |  1201 |  1400 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |     3 |  1401 |  2000 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |     4 |  2001 |  3000 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |     5 |  3001 |  9999 |
++-------+--------+-----------+------+------------+----------+---------+--------+-------+-------+-------+
+75 rows in set (0.00 sec)
+
+mysql> select *
+    -> from emp e, salgrade s
+    -> where e.sal between s.losal and s.hisal;
++-------+--------+-----------+------+------------+---------+---------+--------+-------+-------+-------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO | GRADE | LOSAL | HISAL |
++-------+--------+-----------+------+------------+---------+---------+--------+-------+-------+-------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 | 1100.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |     3 |  1401 |  2000 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |     2 |  1201 |  1400 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |     2 |  1201 |  1400 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |     4 |  2001 |  3000 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |     4 |  2001 |  3000 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |     5 |  3001 |  9999 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |     3 |  1401 |  2000 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |     1 |   700 |  1200 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |     1 |   700 |  1200 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |     4 |  2001 |  3000 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |     2 |  1201 |  1400 |
++-------+--------+-----------+------+------------+---------+---------+--------+-------+-------+-------+
+14 rows in set (0.00 sec)
+
+mysql> select empno,ename,sal,mgr
+    -> from emp;
++-------+--------+----------+------+
+| empno | ename  | sal      | mgr  |
++-------+--------+----------+------+
+|  7369 | SMITH  |  1100.00 | 7902 |
+|  7499 | ALLEN  |  1600.00 | 7698 |
+|  7521 | WARD   |  1250.00 | 7698 |
+|  7566 | JONES  |  2975.00 | 7839 |
+|  7654 | MARTIN |  1250.00 | 7698 |
+|  7698 | BLAKE  |  2850.00 | 7839 |
+|  7782 | CLARK  |  2450.00 | 7839 |
+|  7788 | SCOTT  |  3000.00 | 7566 |
+|  7839 | KING   |  5000.00 | NULL |
+|  7844 | TURNER |  1500.00 | 7698 |
+|  7876 | ADAMS  |  1100.00 | 7788 |
+|  7900 | JAMES  |   950.00 | 7698 |
+|  7902 | FORD   |  3000.00 | 7566 |
+|  7934 | MILLER |  1300.00 | 7782 |
+|   123 | Rajan  | 34567.00 | 7902 |
++-------+--------+----------+------+
+15 rows in set (0.00 sec)
+
+mysql> select empno,ename,sal,mgr
+    -> from emp;
++-------+--------+----------+------+
+| empno | ename  | sal      | mgr  |
++-------+--------+----------+------+
+|  7369 | SMITH  |  1100.00 | 7902 |
+|  7499 | ALLEN  |  1600.00 | 7698 |
+|  7521 | WARD   |  1250.00 | 7698 |
+|  7566 | JONES  |  2975.00 | 7839 |
+|  7654 | MARTIN |  1250.00 | 7698 |
+|  7698 | BLAKE  |  2850.00 | 7839 |
+|  7782 | CLARK  |  2450.00 | 7839 |
+|  7788 | SCOTT  |  3000.00 | 7566 |
+|  7839 | KING   |  5000.00 | NULL |
+|  7844 | TURNER |  1500.00 | 7698 |
+|  7876 | ADAMS  |  1100.00 | 7788 |
+|  7900 | JAMES  |   950.00 | 7698 |
+|  7902 | FORD   |  3000.00 | 7566 |
+|  7934 | MILLER |  1300.00 | 7782 |
+|   123 | Rajan  | 34567.00 | 7902 |
++-------+--------+----------+------+
+15 rows in set (0.00 sec)
+
+mysql> select e.empno,e.ename,e.mgr,m.empno,m.ename
+    -> from emp e,emp m;
++-------+--------+------+-------+--------+
+| empno | ename  | mgr  | empno | ename  |
++-------+--------+------+-------+--------+
+|  7369 | SMITH  | 7902 |  7369 | SMITH  |
+|  7499 | ALLEN  | 7698 |  7369 | SMITH  |
+|  7521 | WARD   | 7698 |  7369 | SMITH  |
+|  7566 | JONES  | 7839 |  7369 | SMITH  |
+|  7654 | MARTIN | 7698 |  7369 | SMITH  |
+|  7698 | BLAKE  | 7839 |  7369 | SMITH  |
+|  7782 | CLARK  | 7839 |  7369 | SMITH  |
+|  7788 | SCOTT  | 7566 |  7369 | SMITH  |
+|  7839 | KING   | NULL |  7369 | SMITH  |
+|  7844 | TURNER | 7698 |  7369 | SMITH  |
+|  7876 | ADAMS  | 7788 |  7369 | SMITH  |
+|  7900 | JAMES  | 7698 |  7369 | SMITH  |
+|  7902 | FORD   | 7566 |  7369 | SMITH  |
+|  7934 | MILLER | 7782 |  7369 | SMITH  |
+|   123 | Rajan  | 7902 |  7369 | SMITH  |
+|  7369 | SMITH  | 7902 |  7499 | ALLEN  |
+|  7499 | ALLEN  | 7698 |  7499 | ALLEN  |
+|  7521 | WARD   | 7698 |  7499 | ALLEN  |
+|  7566 | JONES  | 7839 |  7499 | ALLEN  |
+|  7654 | MARTIN | 7698 |  7499 | ALLEN  |
+|  7698 | BLAKE  | 7839 |  7499 | ALLEN  |
+|  7782 | CLARK  | 7839 |  7499 | ALLEN  |
+|  7788 | SCOTT  | 7566 |  7499 | ALLEN  |
+|  7839 | KING   | NULL |  7499 | ALLEN  |
+|  7844 | TURNER | 7698 |  7499 | ALLEN  |
+|  7876 | ADAMS  | 7788 |  7499 | ALLEN  |
+|  7900 | JAMES  | 7698 |  7499 | ALLEN  |
+|  7902 | FORD   | 7566 |  7499 | ALLEN  |
+|  7934 | MILLER | 7782 |  7499 | ALLEN  |
+|   123 | Rajan  | 7902 |  7499 | ALLEN  |
+|  7369 | SMITH  | 7902 |  7521 | WARD   |
+|  7499 | ALLEN  | 7698 |  7521 | WARD   |
+|  7521 | WARD   | 7698 |  7521 | WARD   |
+|  7566 | JONES  | 7839 |  7521 | WARD   |
+|  7654 | MARTIN | 7698 |  7521 | WARD   |
+|  7698 | BLAKE  | 7839 |  7521 | WARD   |
+|  7782 | CLARK  | 7839 |  7521 | WARD   |
+|  7788 | SCOTT  | 7566 |  7521 | WARD   |
+|  7839 | KING   | NULL |  7521 | WARD   |
+|  7844 | TURNER | 7698 |  7521 | WARD   |
+|  7876 | ADAMS  | 7788 |  7521 | WARD   |
+|  7900 | JAMES  | 7698 |  7521 | WARD   |
+|  7902 | FORD   | 7566 |  7521 | WARD   |
+|  7934 | MILLER | 7782 |  7521 | WARD   |
+|   123 | Rajan  | 7902 |  7521 | WARD   |
+|  7369 | SMITH  | 7902 |  7566 | JONES  |
+|  7499 | ALLEN  | 7698 |  7566 | JONES  |
+|  7521 | WARD   | 7698 |  7566 | JONES  |
+|  7566 | JONES  | 7839 |  7566 | JONES  |
+|  7654 | MARTIN | 7698 |  7566 | JONES  |
+|  7698 | BLAKE  | 7839 |  7566 | JONES  |
+|  7782 | CLARK  | 7839 |  7566 | JONES  |
+|  7788 | SCOTT  | 7566 |  7566 | JONES  |
+|  7839 | KING   | NULL |  7566 | JONES  |
+|  7844 | TURNER | 7698 |  7566 | JONES  |
+|  7876 | ADAMS  | 7788 |  7566 | JONES  |
+|  7900 | JAMES  | 7698 |  7566 | JONES  |
+|  7902 | FORD   | 7566 |  7566 | JONES  |
+|  7934 | MILLER | 7782 |  7566 | JONES  |
+|   123 | Rajan  | 7902 |  7566 | JONES  |
+|  7369 | SMITH  | 7902 |  7654 | MARTIN |
+|  7499 | ALLEN  | 7698 |  7654 | MARTIN |
+|  7521 | WARD   | 7698 |  7654 | MARTIN |
+|  7566 | JONES  | 7839 |  7654 | MARTIN |
+|  7654 | MARTIN | 7698 |  7654 | MARTIN |
+|  7698 | BLAKE  | 7839 |  7654 | MARTIN |
+|  7782 | CLARK  | 7839 |  7654 | MARTIN |
+|  7788 | SCOTT  | 7566 |  7654 | MARTIN |
+|  7839 | KING   | NULL |  7654 | MARTIN |
+|  7844 | TURNER | 7698 |  7654 | MARTIN |
+|  7876 | ADAMS  | 7788 |  7654 | MARTIN |
+|  7900 | JAMES  | 7698 |  7654 | MARTIN |
+|  7902 | FORD   | 7566 |  7654 | MARTIN |
+|  7934 | MILLER | 7782 |  7654 | MARTIN |
+|   123 | Rajan  | 7902 |  7654 | MARTIN |
+|  7369 | SMITH  | 7902 |  7698 | BLAKE  |
+|  7499 | ALLEN  | 7698 |  7698 | BLAKE  |
+|  7521 | WARD   | 7698 |  7698 | BLAKE  |
+|  7566 | JONES  | 7839 |  7698 | BLAKE  |
+|  7654 | MARTIN | 7698 |  7698 | BLAKE  |
+|  7698 | BLAKE  | 7839 |  7698 | BLAKE  |
+|  7782 | CLARK  | 7839 |  7698 | BLAKE  |
+|  7788 | SCOTT  | 7566 |  7698 | BLAKE  |
+|  7839 | KING   | NULL |  7698 | BLAKE  |
+|  7844 | TURNER | 7698 |  7698 | BLAKE  |
+|  7876 | ADAMS  | 7788 |  7698 | BLAKE  |
+|  7900 | JAMES  | 7698 |  7698 | BLAKE  |
+|  7902 | FORD   | 7566 |  7698 | BLAKE  |
+|  7934 | MILLER | 7782 |  7698 | BLAKE  |
+|   123 | Rajan  | 7902 |  7698 | BLAKE  |
+|  7369 | SMITH  | 7902 |  7782 | CLARK  |
+|  7499 | ALLEN  | 7698 |  7782 | CLARK  |
+|  7521 | WARD   | 7698 |  7782 | CLARK  |
+|  7566 | JONES  | 7839 |  7782 | CLARK  |
+|  7654 | MARTIN | 7698 |  7782 | CLARK  |
+|  7698 | BLAKE  | 7839 |  7782 | CLARK  |
+|  7782 | CLARK  | 7839 |  7782 | CLARK  |
+|  7788 | SCOTT  | 7566 |  7782 | CLARK  |
+|  7839 | KING   | NULL |  7782 | CLARK  |
+|  7844 | TURNER | 7698 |  7782 | CLARK  |
+|  7876 | ADAMS  | 7788 |  7782 | CLARK  |
+|  7900 | JAMES  | 7698 |  7782 | CLARK  |
+|  7902 | FORD   | 7566 |  7782 | CLARK  |
+|  7934 | MILLER | 7782 |  7782 | CLARK  |
+|   123 | Rajan  | 7902 |  7782 | CLARK  |
+|  7369 | SMITH  | 7902 |  7788 | SCOTT  |
+|  7499 | ALLEN  | 7698 |  7788 | SCOTT  |
+|  7521 | WARD   | 7698 |  7788 | SCOTT  |
+|  7566 | JONES  | 7839 |  7788 | SCOTT  |
+|  7654 | MARTIN | 7698 |  7788 | SCOTT  |
+|  7698 | BLAKE  | 7839 |  7788 | SCOTT  |
+|  7782 | CLARK  | 7839 |  7788 | SCOTT  |
+|  7788 | SCOTT  | 7566 |  7788 | SCOTT  |
+|  7839 | KING   | NULL |  7788 | SCOTT  |
+|  7844 | TURNER | 7698 |  7788 | SCOTT  |
+|  7876 | ADAMS  | 7788 |  7788 | SCOTT  |
+|  7900 | JAMES  | 7698 |  7788 | SCOTT  |
+|  7902 | FORD   | 7566 |  7788 | SCOTT  |
+|  7934 | MILLER | 7782 |  7788 | SCOTT  |
+|   123 | Rajan  | 7902 |  7788 | SCOTT  |
+|  7369 | SMITH  | 7902 |  7839 | KING   |
+|  7499 | ALLEN  | 7698 |  7839 | KING   |
+|  7521 | WARD   | 7698 |  7839 | KING   |
+|  7566 | JONES  | 7839 |  7839 | KING   |
+|  7654 | MARTIN | 7698 |  7839 | KING   |
+|  7698 | BLAKE  | 7839 |  7839 | KING   |
+|  7782 | CLARK  | 7839 |  7839 | KING   |
+|  7788 | SCOTT  | 7566 |  7839 | KING   |
+|  7839 | KING   | NULL |  7839 | KING   |
+|  7844 | TURNER | 7698 |  7839 | KING   |
+|  7876 | ADAMS  | 7788 |  7839 | KING   |
+|  7900 | JAMES  | 7698 |  7839 | KING   |
+|  7902 | FORD   | 7566 |  7839 | KING   |
+|  7934 | MILLER | 7782 |  7839 | KING   |
+|   123 | Rajan  | 7902 |  7839 | KING   |
+|  7369 | SMITH  | 7902 |  7844 | TURNER |
+|  7499 | ALLEN  | 7698 |  7844 | TURNER |
+|  7521 | WARD   | 7698 |  7844 | TURNER |
+|  7566 | JONES  | 7839 |  7844 | TURNER |
+|  7654 | MARTIN | 7698 |  7844 | TURNER |
+|  7698 | BLAKE  | 7839 |  7844 | TURNER |
+|  7782 | CLARK  | 7839 |  7844 | TURNER |
+|  7788 | SCOTT  | 7566 |  7844 | TURNER |
+|  7839 | KING   | NULL |  7844 | TURNER |
+|  7844 | TURNER | 7698 |  7844 | TURNER |
+|  7876 | ADAMS  | 7788 |  7844 | TURNER |
+|  7900 | JAMES  | 7698 |  7844 | TURNER |
+|  7902 | FORD   | 7566 |  7844 | TURNER |
+|  7934 | MILLER | 7782 |  7844 | TURNER |
+|   123 | Rajan  | 7902 |  7844 | TURNER |
+|  7369 | SMITH  | 7902 |  7876 | ADAMS  |
+|  7499 | ALLEN  | 7698 |  7876 | ADAMS  |
+|  7521 | WARD   | 7698 |  7876 | ADAMS  |
+|  7566 | JONES  | 7839 |  7876 | ADAMS  |
+|  7654 | MARTIN | 7698 |  7876 | ADAMS  |
+|  7698 | BLAKE  | 7839 |  7876 | ADAMS  |
+|  7782 | CLARK  | 7839 |  7876 | ADAMS  |
+|  7788 | SCOTT  | 7566 |  7876 | ADAMS  |
+|  7839 | KING   | NULL |  7876 | ADAMS  |
+|  7844 | TURNER | 7698 |  7876 | ADAMS  |
+|  7876 | ADAMS  | 7788 |  7876 | ADAMS  |
+|  7900 | JAMES  | 7698 |  7876 | ADAMS  |
+|  7902 | FORD   | 7566 |  7876 | ADAMS  |
+|  7934 | MILLER | 7782 |  7876 | ADAMS  |
+|   123 | Rajan  | 7902 |  7876 | ADAMS  |
+|  7369 | SMITH  | 7902 |  7900 | JAMES  |
+|  7499 | ALLEN  | 7698 |  7900 | JAMES  |
+|  7521 | WARD   | 7698 |  7900 | JAMES  |
+|  7566 | JONES  | 7839 |  7900 | JAMES  |
+|  7654 | MARTIN | 7698 |  7900 | JAMES  |
+|  7698 | BLAKE  | 7839 |  7900 | JAMES  |
+|  7782 | CLARK  | 7839 |  7900 | JAMES  |
+|  7788 | SCOTT  | 7566 |  7900 | JAMES  |
+|  7839 | KING   | NULL |  7900 | JAMES  |
+|  7844 | TURNER | 7698 |  7900 | JAMES  |
+|  7876 | ADAMS  | 7788 |  7900 | JAMES  |
+|  7900 | JAMES  | 7698 |  7900 | JAMES  |
+|  7902 | FORD   | 7566 |  7900 | JAMES  |
+|  7934 | MILLER | 7782 |  7900 | JAMES  |
+|   123 | Rajan  | 7902 |  7900 | JAMES  |
+|  7369 | SMITH  | 7902 |  7902 | FORD   |
+|  7499 | ALLEN  | 7698 |  7902 | FORD   |
+|  7521 | WARD   | 7698 |  7902 | FORD   |
+|  7566 | JONES  | 7839 |  7902 | FORD   |
+|  7654 | MARTIN | 7698 |  7902 | FORD   |
+|  7698 | BLAKE  | 7839 |  7902 | FORD   |
+|  7782 | CLARK  | 7839 |  7902 | FORD   |
+|  7788 | SCOTT  | 7566 |  7902 | FORD   |
+|  7839 | KING   | NULL |  7902 | FORD   |
+|  7844 | TURNER | 7698 |  7902 | FORD   |
+|  7876 | ADAMS  | 7788 |  7902 | FORD   |
+|  7900 | JAMES  | 7698 |  7902 | FORD   |
+|  7902 | FORD   | 7566 |  7902 | FORD   |
+|  7934 | MILLER | 7782 |  7902 | FORD   |
+|   123 | Rajan  | 7902 |  7902 | FORD   |
+|  7369 | SMITH  | 7902 |  7934 | MILLER |
+|  7499 | ALLEN  | 7698 |  7934 | MILLER |
+|  7521 | WARD   | 7698 |  7934 | MILLER |
+|  7566 | JONES  | 7839 |  7934 | MILLER |
+|  7654 | MARTIN | 7698 |  7934 | MILLER |
+|  7698 | BLAKE  | 7839 |  7934 | MILLER |
+|  7782 | CLARK  | 7839 |  7934 | MILLER |
+|  7788 | SCOTT  | 7566 |  7934 | MILLER |
+|  7839 | KING   | NULL |  7934 | MILLER |
+|  7844 | TURNER | 7698 |  7934 | MILLER |
+|  7876 | ADAMS  | 7788 |  7934 | MILLER |
+|  7900 | JAMES  | 7698 |  7934 | MILLER |
+|  7902 | FORD   | 7566 |  7934 | MILLER |
+|  7934 | MILLER | 7782 |  7934 | MILLER |
+|   123 | Rajan  | 7902 |  7934 | MILLER |
+|  7369 | SMITH  | 7902 |   123 | Rajan  |
+|  7499 | ALLEN  | 7698 |   123 | Rajan  |
+|  7521 | WARD   | 7698 |   123 | Rajan  |
+|  7566 | JONES  | 7839 |   123 | Rajan  |
+|  7654 | MARTIN | 7698 |   123 | Rajan  |
+|  7698 | BLAKE  | 7839 |   123 | Rajan  |
+|  7782 | CLARK  | 7839 |   123 | Rajan  |
+|  7788 | SCOTT  | 7566 |   123 | Rajan  |
+|  7839 | KING   | NULL |   123 | Rajan  |
+|  7844 | TURNER | 7698 |   123 | Rajan  |
+|  7876 | ADAMS  | 7788 |   123 | Rajan  |
+|  7900 | JAMES  | 7698 |   123 | Rajan  |
+|  7902 | FORD   | 7566 |   123 | Rajan  |
+|  7934 | MILLER | 7782 |   123 | Rajan  |
+|   123 | Rajan  | 7902 |   123 | Rajan  |
++-------+--------+------+-------+--------+
+225 rows in set (0.00 sec)
+
+mysql> select e.empno,e.ename,e.mgr,m.empno mgrno,m.ename mgrname
+    -> from emp e,emp m
+    -> where e.mgr=m.empno;
++-------+--------+------+-------+---------+
+| empno | ename  | mgr  | mgrno | mgrname |
++-------+--------+------+-------+---------+
+|  7788 | SCOTT  | 7566 |  7566 | JONES   |
+|  7902 | FORD   | 7566 |  7566 | JONES   |
+|  7499 | ALLEN  | 7698 |  7698 | BLAKE   |
+|  7521 | WARD   | 7698 |  7698 | BLAKE   |
+|  7654 | MARTIN | 7698 |  7698 | BLAKE   |
+|  7844 | TURNER | 7698 |  7698 | BLAKE   |
+|  7900 | JAMES  | 7698 |  7698 | BLAKE   |
+|  7934 | MILLER | 7782 |  7782 | CLARK   |
+|  7876 | ADAMS  | 7788 |  7788 | SCOTT   |
+|  7566 | JONES  | 7839 |  7839 | KING    |
+|  7698 | BLAKE  | 7839 |  7839 | KING    |
+|  7782 | CLARK  | 7839 |  7839 | KING    |
+|  7369 | SMITH  | 7902 |  7902 | FORD    |
+|   123 | Rajan  | 7902 |  7902 | FORD    |
++-------+--------+------+-------+---------+
+14 rows in set (0.00 sec)
+
+mysql> select * from course;
++-----+-------+------+
+| cid | cname | size |
++-----+-------+------+
+|  11 | cpp   |  400 |
+|  25 | java  |  240 |
++-----+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from course_faculty;
++-----+-----+
+| cid | fid |
++-----+-----+
+|  11 | 101 |
++-----+-----+
+1 row in set (0.00 sec)
+
+mysql> select * from faculty;
++-----+------------+------------+
+| fid | fname      | experience |
++-----+------------+------------+
+| 101 | Dhanashree |          7 |
++-----+------------+------------+
+1 row in set (0.00 sec)
+
+mysql> select c.cname,f.fname from course c,course_faculty cf,faculty f
+    -> where c.cid=cf.cid and cf.fid=f.fid;
++-------+------------+
+| cname | fname      |
++-------+------------+
+| cpp   | Dhanashree |
++-------+------------+
+1 row in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from dept;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from salgrade
+    -> ;
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc emp;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int          | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int          | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> desc dept
+    -> ;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| DEPTNO | int         | YES  |     | NULL    |       |
+| DNAME  | varchar(14) | YES  |     | NULL    |       |
+| LOC    | varchar(13) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc salgrade;
++-------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++-------+------+------+-----+---------+-------+
+| GRADE | int  | YES  |     | NULL    |       |
+| LOSAL | int  | YES  |     | NULL    |       |
+| HISAL | int  | YES  |     | NULL    |       |
++-------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,dname,sal,grade,losal,hisal
+    -> from emp e, dept d, salgrade s
+    -> where e.deptno=d.deptno and e.sal between s.losal and s.hisal;
++-------+--------+--------+------------+---------+-------+-------+-------+
+| empno | ename  | deptno | dname      | sal     | grade | losal | hisal |
++-------+--------+--------+------------+---------+-------+-------+-------+
+|  7369 | SMITH  |     20 | RESEARCH   | 1100.00 |     1 |   700 |  1200 |
+|  7876 | ADAMS  |     20 | RESEARCH   | 1100.00 |     1 |   700 |  1200 |
+|  7900 | JAMES  |     30 | SALES      |  950.00 |     1 |   700 |  1200 |
+|  7521 | WARD   |     30 | SALES      | 1250.00 |     2 |  1201 |  1400 |
+|  7654 | MARTIN |     30 | SALES      | 1250.00 |     2 |  1201 |  1400 |
+|  7934 | MILLER |     10 | ACCOUNTING | 1300.00 |     2 |  1201 |  1400 |
+|  7499 | ALLEN  |     30 | SALES      | 1600.00 |     3 |  1401 |  2000 |
+|  7844 | TURNER |     30 | SALES      | 1500.00 |     3 |  1401 |  2000 |
+|  7566 | JONES  |     20 | RESEARCH   | 2975.00 |     4 |  2001 |  3000 |
+|  7698 | BLAKE  |     30 | SALES      | 2850.00 |     4 |  2001 |  3000 |
+|  7782 | CLARK  |     10 | ACCOUNTING | 2450.00 |     4 |  2001 |  3000 |
+|  7788 | SCOTT  |     20 | RESEARCH   | 3000.00 |     4 |  2001 |  3000 |
+|  7902 | FORD   |     20 | RESEARCH   | 3000.00 |     4 |  2001 |  3000 |
+|  7839 | KING   |     10 | ACCOUNTING | 5000.00 |     5 |  3001 |  9999 |
++-------+--------+--------+------------+---------+-------+-------+-------+
+14 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,d.dname
+    -> from emp e inner join dept d on e.deptno=d.deptno;
++-------+--------+--------+--------+------------+
+| empno | ename  | deptno | deptno | dname      |
++-------+--------+--------+--------+------------+
+|  7369 | SMITH  |     20 |     20 | RESEARCH   |
+|  7499 | ALLEN  |     30 |     30 | SALES      |
+|  7521 | WARD   |     30 |     30 | SALES      |
+|  7566 | JONES  |     20 |     20 | RESEARCH   |
+|  7654 | MARTIN |     30 |     30 | SALES      |
+|  7698 | BLAKE  |     30 |     30 | SALES      |
+|  7782 | CLARK  |     10 |     10 | ACCOUNTING |
+|  7788 | SCOTT  |     20 |     20 | RESEARCH   |
+|  7839 | KING   |     10 |     10 | ACCOUNTING |
+|  7844 | TURNER |     30 |     30 | SALES      |
+|  7876 | ADAMS  |     20 |     20 | RESEARCH   |
+|  7900 | JAMES  |     30 |     30 | SALES      |
+|  7902 | FORD   |     20 |     20 | RESEARCH   |
+|  7934 | MILLER |     10 |     10 | ACCOUNTING |
+|   123 | Rajan  |     10 |     10 | ACCOUNTING |
++-------+--------+--------+--------+------------+
+15 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,d.dname,s.grade
+    -> from emp e inner join dept d on e.deptno=d.deptno inner join salgrade s
+    -> on e.sal between s.losal and s.hisal;
++-------+--------+--------+--------+------------+-------+
+| empno | ename  | deptno | deptno | dname      | grade |
++-------+--------+--------+--------+------------+-------+
+|  7369 | SMITH  |     20 |     20 | RESEARCH   |     1 |
+|  7876 | ADAMS  |     20 |     20 | RESEARCH   |     1 |
+|  7900 | JAMES  |     30 |     30 | SALES      |     1 |
+|  7521 | WARD   |     30 |     30 | SALES      |     2 |
+|  7654 | MARTIN |     30 |     30 | SALES      |     2 |
+|  7934 | MILLER |     10 |     10 | ACCOUNTING |     2 |
+|  7499 | ALLEN  |     30 |     30 | SALES      |     3 |
+|  7844 | TURNER |     30 |     30 | SALES      |     3 |
+|  7566 | JONES  |     20 |     20 | RESEARCH   |     4 |
+|  7698 | BLAKE  |     30 |     30 | SALES      |     4 |
+|  7782 | CLARK  |     10 |     10 | ACCOUNTING |     4 |
+|  7788 | SCOTT  |     20 |     20 | RESEARCH   |     4 |
+|  7902 | FORD   |     20 |     20 | RESEARCH   |     4 |
+|  7839 | KING   |     10 |     10 | ACCOUNTING |     5 |
++-------+--------+--------+--------+------------+-------+
+14 rows in set (0.00 sec)
+
+mysql> desc emp;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int          | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int          | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> insert into emp(empno,ename,sal,comm) values (1023,'Revati',55555,4567);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1023 | Revati | NULL      | NULL | NULL       | 55555.00 | 4567.00 |   NULL |
++-------+--------+-----------+------+------------+----------+---------+--------+
+16 rows in set (0.00 sec)
+
+mysql> select empno,ename,e.deptno,d.deptno,d.dname
+    -> from emp e inner join dept d on e.deptno=d.deptno;
++-------+--------+--------+--------+------------+
+| empno | ename  | deptno | deptno | dname      |
++-------+--------+--------+--------+------------+
+|  7369 | SMITH  |     20 |     20 | RESEARCH   |
+|  7499 | ALLEN  |     30 |     30 | SALES      |
+|  7521 | WARD   |     30 |     30 | SALES      |
+|  7566 | JONES  |     20 |     20 | RESEARCH   |
+|  7654 | MARTIN |     30 |     30 | SALES      |
+|  7698 | BLAKE  |     30 |     30 | SALES      |
+|  7782 | CLARK  |     10 |     10 | ACCOUNTING |
+|  7788 | SCOTT  |     20 |     20 | RESEARCH   |
+|  7839 | KING   |     10 |     10 | ACCOUNTING |
+|  7844 | TURNER |     30 |     30 | SALES      |
+|  7876 | ADAMS  |     20 |     20 | RESEARCH   |
+|  7900 | JAMES  |     30 |     30 | SALES      |
+|  7902 | FORD   |     20 |     20 | RESEARCH   |
+|  7934 | MILLER |     10 |     10 | ACCOUNTING |
+|   123 | Rajan  |     10 |     10 | ACCOUNTING |
++-------+--------+--------+--------+------------+
+15 rows in set (0.00 sec)
+
+mysql> select empno,ename,sal,e.deptno,d.deptno,d.dname
+    -> from emp e right join dept d on e.deptno=d.deptno;
++-------+--------+----------+--------+--------+------------+
+| empno | ename  | sal      | deptno | deptno | dname      |
++-------+--------+----------+--------+--------+------------+
+|  7782 | CLARK  |  2450.00 |     10 |     10 | ACCOUNTING |
+|  7839 | KING   |  5000.00 |     10 |     10 | ACCOUNTING |
+|  7934 | MILLER |  1300.00 |     10 |     10 | ACCOUNTING |
+|   123 | Rajan  | 34567.00 |     10 |     10 | ACCOUNTING |
+|  7369 | SMITH  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7566 | JONES  |  2975.00 |     20 |     20 | RESEARCH   |
+|  7788 | SCOTT  |  3000.00 |     20 |     20 | RESEARCH   |
+|  7876 | ADAMS  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7902 | FORD   |  3000.00 |     20 |     20 | RESEARCH   |
+|  7499 | ALLEN  |  1600.00 |     30 |     30 | SALES      |
+|  7521 | WARD   |  1250.00 |     30 |     30 | SALES      |
+|  7654 | MARTIN |  1250.00 |     30 |     30 | SALES      |
+|  7698 | BLAKE  |  2850.00 |     30 |     30 | SALES      |
+|  7844 | TURNER |  1500.00 |     30 |     30 | SALES      |
+|  7900 | JAMES  |   950.00 |     30 |     30 | SALES      |
+|  NULL | NULL   |     NULL |   NULL |     40 | OPERATIONS |
++-------+--------+----------+--------+--------+------------+
+16 rows in set (0.00 sec)
+
+mysql> select empno,ename,sal,e.deptno,d.deptno,d.dname
+    -> from emp e left join dept d on e.deptno=d.deptno;
++-------+--------+----------+--------+--------+------------+
+| empno | ename  | sal      | deptno | deptno | dname      |
++-------+--------+----------+--------+--------+------------+
+|  7369 | SMITH  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7499 | ALLEN  |  1600.00 |     30 |     30 | SALES      |
+|  7521 | WARD   |  1250.00 |     30 |     30 | SALES      |
+|  7566 | JONES  |  2975.00 |     20 |     20 | RESEARCH   |
+|  7654 | MARTIN |  1250.00 |     30 |     30 | SALES      |
+|  7698 | BLAKE  |  2850.00 |     30 |     30 | SALES      |
+|  7782 | CLARK  |  2450.00 |     10 |     10 | ACCOUNTING |
+|  7788 | SCOTT  |  3000.00 |     20 |     20 | RESEARCH   |
+|  7839 | KING   |  5000.00 |     10 |     10 | ACCOUNTING |
+|  7844 | TURNER |  1500.00 |     30 |     30 | SALES      |
+|  7876 | ADAMS  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7900 | JAMES  |   950.00 |     30 |     30 | SALES      |
+|  7902 | FORD   |  3000.00 |     20 |     20 | RESEARCH   |
+|  7934 | MILLER |  1300.00 |     10 |     10 | ACCOUNTING |
+|   123 | Rajan  | 34567.00 |     10 |     10 | ACCOUNTING |
+|  1023 | Revati | 55555.00 |   NULL |   NULL | NULL       |
++-------+--------+----------+--------+--------+------------+
+16 rows in set (0.00 sec)
+
+mysql> select empno,ename,sal,e.deptno,d.deptno,d.dname
+    -> from emp e right join dept d on e.deptno=d.deptno
+    -> union
+    -> select empno,ename,sal,e.deptno,d.deptno,d.dname
+    -> from emp e left join dept d on e.deptno=d.deptno;
++-------+--------+----------+--------+--------+------------+
+| empno | ename  | sal      | deptno | deptno | dname      |
++-------+--------+----------+--------+--------+------------+
+|  7782 | CLARK  |  2450.00 |     10 |     10 | ACCOUNTING |
+|  7839 | KING   |  5000.00 |     10 |     10 | ACCOUNTING |
+|  7934 | MILLER |  1300.00 |     10 |     10 | ACCOUNTING |
+|   123 | Rajan  | 34567.00 |     10 |     10 | ACCOUNTING |
+|  7369 | SMITH  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7566 | JONES  |  2975.00 |     20 |     20 | RESEARCH   |
+|  7788 | SCOTT  |  3000.00 |     20 |     20 | RESEARCH   |
+|  7876 | ADAMS  |  1100.00 |     20 |     20 | RESEARCH   |
+|  7902 | FORD   |  3000.00 |     20 |     20 | RESEARCH   |
+|  7499 | ALLEN  |  1600.00 |     30 |     30 | SALES      |
+|  7521 | WARD   |  1250.00 |     30 |     30 | SALES      |
+|  7654 | MARTIN |  1250.00 |     30 |     30 | SALES      |
+|  7698 | BLAKE  |  2850.00 |     30 |     30 | SALES      |
+|  7844 | TURNER |  1500.00 |     30 |     30 | SALES      |
+|  7900 | JAMES  |   950.00 |     30 |     30 | SALES      |
+|  NULL | NULL   |     NULL |   NULL |     40 | OPERATIONS |
+|  1023 | Revati | 55555.00 |   NULL |   NULL | NULL       |
++-------+--------+----------+--------+--------+------------+
+17 rows in set (0.00 sec)
+
+mysql>

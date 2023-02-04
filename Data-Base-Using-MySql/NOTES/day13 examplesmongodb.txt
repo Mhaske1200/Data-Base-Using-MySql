@@ -1,0 +1,68 @@
+$gt,$ne,$lt,$gte,$lte,$in, $nin,$mod,$type,$size,$elemMatch,$or,$and,$not
+
+1. to find all movies with rating =3
+db.movie.find({rating:3}).pretty()
+2. to find all mivies with rating =3 and price=340
+db.movie.find({rating:3,price:340}).pretty()
+3. find restaurent with zipcode=1111
+db.restaurent.find({"address.zipcode":"10314"})
+4. find all restaurents with score 9
+db.restaurent.find({"grades.score":9})
+5. to find all movies with rating >3 and sort them ratingwise
+db.movie.find({rating:{$gt:3}},{name:1,rating:1,_id:0}).sort({rating:1})
+6. to find all movies with rating >3 and rating < 6
+db.movie.find({rating:{$gt:3,$lt:5}},{name:1,rating:1,_id:0})
+7.to find all movies with rating >3 and rating < 6 
+and price>200
+rating:{$gt:3,$lt:6}
+price:{$gt:200}
+db.movie.find({rating:{$gt:3,$lt:6},price:{$gt:200}})
+8.to find all movies with rating >3 and rating < 6 
+or price>200
+rating:{$gt:3,$lt:6}
+price:{$gt:200}
+$or:[{rating:{$gt:3,$lt:6}},{price:{$gt:200}}]
+db.movie.find({$or:[{rating:{$gt:3,$lt:6}},{price:{$gt:200}}]})
+
+9. to find all movies with price = either 200 or 340 or 240
+db.movie.find({price:{$in:[200,240,340]}})
+
+9. to find all movies with price is not  either 200 or 340 or 240
+db.movie.find({price:{$nin:[200,240,340]}})
+
+10. to find all movies with odd rating
+db.movie.find({rating:{$mod:[2,1]}})
+
+11.to find all movies with ticket_no is either 
+250 or 200 or 300
+ticket_no:{$in:[250,200,300]}
+db.movie.find({ticket_no:{$in:[250,200,300]}})
+
+12.to find all movies in which 3 actors are there in the list
+db.movie.find({actor:{$size:3}})
+
+13. find all movies in which Amitabh has acted
+ db.movie.find({'actor':'Amitabh'}).pretty()
+14. find all movies in which Amitabh has acted, and the name is at
+1st index position
+ db.movie.find({'actor.1':'Amitabh'}).pretty()
+ 
+15. 13. find all movies in which Amitabh has acted
+db.movie.find({'actor':/^[Aa]mitabh/}).pretty()
+
+16. find all movies with name ends with t
+db.movie.find({name:/t$/})
+
+17. find all movies with name starts with p or a  and ends with 
+t or a
+
+db.movie.find({name:/^[pa].*[ta]$/})
+
+18. 
+ db.restaurent.find({grades:{$elemMatch:{
+ 
+                        "date" : ISODate("2012-01-24T00:00:00Z"),
+                        "grade" : "A",
+                        "score" : 9
+                
+ }}})

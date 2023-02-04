@@ -1,0 +1,572 @@
+Enter password: *******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 14
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use test;
+Database changed
+mysql> show index from emp;
+Empty set (0.02 sec)
+
+mysql> show index from category;
+Empty set (0.00 sec)
+
+mysql> create index idx_cname
+    -> on category(cname);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from category;
++----------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name  | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| category |          1 | idx_cname |            1 | cname       | A         |           2 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
++----------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+1 row in set (0.01 sec)
+
+mysql> drop index idx_cname;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> drop index idx_cname from category;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from category' at line 1
+mysql> drop index category(idx_cname);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(idx_cname)' at line 1
+mysql> alter table category
+    -> drop index idx_cname;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create view mgr10
+    -> as
+    -> select empno,ename,job
+    -> from emp
+    -> where deptno=10;
+ERROR 1050 (42S01): Table 'mgr10' already exists
+mysql> drop view mgr10;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view mgr10
+    -> as
+    -> select empno,ename,job
+    -> from emp
+    -> where deptno=10;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop view mgr10;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view mgr10
+    -> as
+    -> select *
+    -> from emp
+    -> where deptno=10;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from mgr10;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> desc emp;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int          | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int          | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> desc mgr10;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int          | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int          | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> insert into mgr10 values(1211,'xxxx','mmm',7902,'2018-02-02',3456,456,10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from mgr10;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+16 rows in set (0.00 sec)
+
+mysql> insert into mgr10 values(1212,'xxxx','mmm',7902,'2018-02-02',3456,456,20);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> drop view mgr10;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view mgr10
+    -> as
+    -> select *
+    -> from emp
+    -> where deptno=10
+    -> with check option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into mgr10 values(125,'xxxx','mmm',7902,'2018-02-02',3456,456,20);
+ERROR 1369 (HY000): CHECK OPTION failed 'test.mgr10'
+mysql> select deptno,job,sum(Sal),count(*),min(sal)
+    -> from emp
+    -> group by deptno,job;
++--------+-----------+----------+----------+----------+
+| deptno | job       | sum(Sal) | count(*) | min(sal) |
++--------+-----------+----------+----------+----------+
+|     20 | CLERK     |  2200.00 |        2 |  1100.00 |
+|     30 | SALESMAN  |  5600.00 |        4 |  1250.00 |
+|     20 | MANAGER   |  2975.00 |        1 |  2975.00 |
+|     30 | MANAGER   |  2850.00 |        1 |  2850.00 |
+|     10 | MANAGER   |  2450.00 |        1 |  2450.00 |
+|     20 | ANALYST   |  6000.00 |        2 |  3000.00 |
+|     10 | PRESIDENT |  5000.00 |        1 |  5000.00 |
+|     30 | CLERK     |   950.00 |        1 |   950.00 |
+|     10 | CLERK     |  1300.00 |        1 |  1300.00 |
+|     10 | Designer  | 34567.00 |        1 | 34567.00 |
+|     10 | mmm       |  3456.00 |        1 |  3456.00 |
+|     20 | mmm       |  3456.00 |        1 |  3456.00 |
++--------+-----------+----------+----------+----------+
+12 rows in set (0.00 sec)
+
+mysql> create view testdata
+    -> as
+    -> select deptno,job,sum(Sal),count(*),min(sal)
+    -> from emp
+    -> group by deptno,job;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from testdata;
++--------+-----------+----------+----------+----------+
+| deptno | job       | sum(Sal) | count(*) | min(sal) |
++--------+-----------+----------+----------+----------+
+|     20 | CLERK     |  2200.00 |        2 |  1100.00 |
+|     30 | SALESMAN  |  5600.00 |        4 |  1250.00 |
+|     20 | MANAGER   |  2975.00 |        1 |  2975.00 |
+|     30 | MANAGER   |  2850.00 |        1 |  2850.00 |
+|     10 | MANAGER   |  2450.00 |        1 |  2450.00 |
+|     20 | ANALYST   |  6000.00 |        2 |  3000.00 |
+|     10 | PRESIDENT |  5000.00 |        1 |  5000.00 |
+|     30 | CLERK     |   950.00 |        1 |   950.00 |
+|     10 | CLERK     |  1300.00 |        1 |  1300.00 |
+|     10 | Designer  | 34567.00 |        1 | 34567.00 |
+|     10 | mmm       |  3456.00 |        1 |  3456.00 |
+|     20 | mmm       |  3456.00 |        1 |  3456.00 |
++--------+-----------+----------+----------+----------+
+12 rows in set (0.00 sec)
+
+mysql> select * from emp
+    -> union
+    -> select * from emp_japan^C
+mysql> select * from emp_india
+    -> union
+    -> select * from emp_japan
+    -> union
+    -> select * from emp_us;
++------+---------+----------+
+| id   | name    | location |
++------+---------+----------+
+|  103 | Shivesh | India    |
+|  104 | Shivali | India    |
+|  104 | Ashish  | Japan    |
+|  100 | Rajan   | India    |
+|  101 | Rajat   | US       |
++------+---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> create view allemp
+    -> as
+    -> select * from emp_us;
+ERROR 1050 (42S01): Table 'allemp' already exists
+mysql> drop view allemp;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view allemp
+    -> as
+    -> select * from emp_us
+    -> union
+    -> select * from emp_japan
+    -> union
+    -> select * from emp_india;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select deptno,job,sum(Sal),count(*),min(sal)
+    ->     -> from emp
+    ->     -> group by deptno,job;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> from emp
+    -> group by deptno,job' at line 2
+mysql> Create view produ_cat
+    -> As
+    -> Select cname,pname
+    -> From category c , product p
+    -> Where c.cid=p.cid;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from produ_cat;
++-------------+---------------+
+| cname       | pname         |
++-------------+---------------+
+| chips       | Nachos123     |
+| chips       | Pringles123   |
+| biscuits    | Marie gold    |
+| biscuits    | nice1234      |
+| biscuits    | good day123   |
+| biscuits    | Hide and seek |
+| biscuits    | bread         |
+| biscuits    | Marie         |
+| biscuits    | 50-50         |
+| chips       | xxx           |
+| cold drinks | marie         |
+| cold drinks | marie         |
+| chips       | aaaaa         |
++-------------+---------------+
+13 rows in set (0.01 sec)
+
+mysql> Create materialized view produ_cat
+    -> as
+    -> ^C
+mysql> Create view produ_cat_1
+    -> a^C
+mysql> Create materialized view produ_cat_1
+    -> as
+    -> select * from product;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'materialized view produ_cat_1
+as
+select * from product' at line 1
+mysql> SHOW ENGINES;
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| Engine             | Support | Comment                                                        | Transactions | XA   | Savepoints |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| MEMORY             | YES     | Hash based, stored in memory, useful for temporary tables      | NO           | NO   | NO         |
+| MRG_MYISAM         | YES     | Collection of identical MyISAM tables                          | NO           | NO   | NO         |
+| CSV                | YES     | CSV storage engine                                             | NO           | NO   | NO         |
+| FEDERATED          | NO      | Federated MySQL storage engine                                 | NULL         | NULL | NULL       |
+| PERFORMANCE_SCHEMA | YES     | Performance Schema                                             | NO           | NO   | NO         |
+| MyISAM             | YES     | MyISAM storage engine                                          | NO           | NO   | NO         |
+| InnoDB             | DEFAULT | Supports transactions, row-level locking, and foreign keys     | YES          | YES  | YES        |
+| BLACKHOLE          | YES     | /dev/null storage engine (anything you write to it disappears) | NO           | NO   | NO         |
+| ARCHIVE            | YES     | Archive storage engine                                         | NO           | NO   | NO         |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT ENGINE FROM information_schema.TABLES
+    ->     WHERE TABLE_SCHEMA='test'
+    ->     AND TABLE_NAME='emp';
++--------+
+| ENGINE |
++--------+
+| InnoDB |
++--------+
+1 row in set (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create procedure getcnt(pdno in int, pcnt out int)
+    -> Begin
+    ->     Select count(*) into pcnt
+    ->      From emp
+    ->      Where deptno=pdno;
+    ->
+    -> End//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'in int, pcnt out int)
+Begin
+    Select count(*) into pcnt
+     From emp
+     Whe' at line 1
+mysql> Delimiter ;
+mysql>
+mysql> To call the procedure
+    -> Call getcnt(10,@c);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'To call the procedure
+Call getcnt(10,@c)' at line 1
+mysql> Select @c;
++------------+
+| @c         |
++------------+
+| 0x         |
++------------+
+1 row in set (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create procedure getcnt(in pdno  int, out pcnt int)
+    -> Begin
+    ->     Select count(*) into pcnt
+    ->      From emp
+    ->      Where deptno=pdno;
+    ->
+    -> End//
+ERROR 1304 (42000): PROCEDURE getcnt already exists
+mysql> Delimiter ;
+mysql> drop procedure getcnt
+    -> ;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter //
+mysql> Create procedure getcnt(in pdno  int, out pcnt int)
+    -> Begin
+    ->     Select count(*) into pcnt
+    ->      From emp
+    ->      Where deptno=pdno;
+    ->
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter ;
+mysql> call getcnt(10,@c);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @c;
++------+
+| @c   |
++------+
+|    5 |
++------+
+1 row in set (0.00 sec)
+
+mysql> select count(*)
+    -> from emp
+    -> where deptno=10;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*)
+    -> from emp
+    -> where deptno=20;
++----------+
+| count(*) |
++----------+
+|        6 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> call getcnt(20,@c);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @c;
++------+
+| @c   |
++------+
+|    6 |
++------+
+1 row in set (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create procedure getavgsal(pjob varchar(20),out pavg decimal(9,2))
+    -> Begin
+    ->    Select avg(sal) into pavg
+    ->    From emp
+    ->   Where job=pjob;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter ;
+mysql> call getavgsal('CLERK',@c);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @c;
++---------+
+| @c      |
++---------+
+| 1112.50 |
++---------+
+1 row in set (0.00 sec)
+
+mysql> select avg(sal)
+    -> from emp
+    -> where job='CLERK';
++-------------+
+| avg(sal)    |
++-------------+
+| 1112.500000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create procedure checkdata(v int)
+    -> Begin
+    ->     If v> 10 then
+    ->          Select "greater"
+    ->    Elseif v=10 then
+    ->          Select ‘equal’;
+    ->     Else
+    ->          Select "smaller"
+    ->     End if;
+    -> End//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Elseif v=10 then
+         Select ?equal?;
+    Else
+         Select "smaller"
+   ' at line 5
+mysql> Delimiter //
+mysql> Create procedure checkdata(v int)
+    -> Begin
+    ->     If v> 10 then
+    ->          Select 'greater';
+    ->    Elseif v=10 then
+    ->          Select 'equal';
+    ->     Else
+    ->          Select 'smaller';
+    ->     End if;
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call checkdata(30)
+    -> ;
+    -> //
++---------+
+| greater |
++---------+
+| greater |
++---------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
+mysql> call checkdata(5);
++---------+
+| smaller |
++---------+
+| smaller |
++---------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call checkdata(10);
++-------+
+| equal |
++-------+
+| equal |
++-------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create procedure getremark(peno int)
+    -> Begin
+    ->       Declare vcomm decimal(9,2) ;
+    ->      Select comm into vcomm
+    ->      From emp
+    ->       Where empno=peno;
+    ->        If vcomm is null or vcomm=0 then
+    ->            Select 'need improvement';
+    ->        Elseif vcomm<500 then
+    ->           Select 'ok';
+    ->        Elseif vcomm <1000 then
+    ->       Select 'good';
+    ->       Else
+    ->               Select 'excellent';
+    -> End if;
+    ->
+    ->
+    -> End//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter ;
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  1100.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
+|  1211 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     10 |
+|  1212 | xxxx   | mmm       | 7902 | 2018-02-02 |  3456.00 |  456.00 |     20 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+17 rows in set (0.00 sec)
+
+mysql> call getremark(7369);
++------------------+
+| need improvement |
++------------------+
+| need improvement |
++------------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call getremark(7654);
++-----------+
+| excellent |
++-----------+
+| excellent |
++-----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+

@@ -1,0 +1,588 @@
+mysql> Select deptno,count(*)
+    -> From emp
+    -> Where job='ANALYST'
+    -> group by deptno;
++--------+----------+
+| deptno | count(*) |
++--------+----------+
+|     20 |        2 |
++--------+----------+
+1 row in set (0.00 sec)
+
+mysql> Select deptno,job,count(*)
+    -> from emp
+    -> group by deptno,job;
++--------+-----------+----------+
+| deptno | job       | count(*) |
++--------+-----------+----------+
+|     20 | CLERK     |        2 |
+|     30 | SALESMAN  |        4 |
+|     20 | MANAGER   |        1 |
+|     30 | MANAGER   |        1 |
+|     10 | MANAGER   |        1 |
+|     20 | ANALYST   |        2 |
+|     10 | PRESIDENT |        1 |
+|     30 | CLERK     |        1 |
+|     10 | CLERK     |        1 |
+|     10 | Designer  |        1 |
++--------+-----------+----------+
+10 rows in set (0.00 sec)
+
+mysql> Select deptno,count(*)
+    -> From emp
+    -> Where job='CLERK'
+    -> group by deptno;
++--------+----------+
+| deptno | count(*) |
++--------+----------+
+|     20 |        2 |
+|     30 |        1 |
+|     10 |        1 |
++--------+----------+
+3 rows in set (0.00 sec)
+
+mysql> Select deptno,sum(sal),avg(sal)
+    -> From emp
+    -> Where sal > 1500
+    -> Group by deptno;
++--------+----------+--------------+
+| deptno | sum(sal) | avg(sal)     |
++--------+----------+--------------+
+|     30 |  4450.00 |  2225.000000 |
+|     20 |  8975.00 |  2991.666667 |
+|     10 | 42017.00 | 14005.666667 |
++--------+----------+--------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |   800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select deptno,count(*)
+    -> from emp
+    -> where job='SLAESMAN'
+    -> group by deptno
+    -> ;
+Empty set (0.00 sec)
+
+mysql> select deptno,count(*)
+    -> from emp
+    -> where job='SALESMAN'
+    -> group by deptno;
++--------+----------+
+| deptno | count(*) |
++--------+----------+
+|     30 |        4 |
++--------+----------+
+1 row in set (0.00 sec)
+
+mysql> select mgr,count(*)
+    -> from emp
+    -> group by mgr;
++------+----------+
+| mgr  | count(*) |
++------+----------+
+| 7902 |        2 |
+| 7698 |        5 |
+| 7839 |        3 |
+| 7566 |        2 |
+| NULL |        1 |
+| 7788 |        1 |
+| 7782 |        1 |
++------+----------+
+7 rows in set (0.00 sec)
+
+mysql> select mgr,count(*)
+    -> from emp
+    -> where mgr is null
+    -> ^C
+mysql> select mgr,count(*)
+    -> from emp
+    -> where mgr is not null
+    -> group by mgr;
++------+----------+
+| mgr  | count(*) |
++------+----------+
+| 7902 |        2 |
+| 7698 |        5 |
+| 7839 |        3 |
+| 7566 |        2 |
+| 7788 |        1 |
+| 7782 |        1 |
++------+----------+
+6 rows in set (0.00 sec)
+
+mysql> Select deptno,job,max(sal),sum(sal+ifnull(comm,0))
+    -> From emp
+    -> Group by deptno,job
+    -> ;
++--------+-----------+----------+-------------------------+
+| deptno | job       | max(sal) | sum(sal+ifnull(comm,0)) |
++--------+-----------+----------+-------------------------+
+|     20 | CLERK     |  1100.00 |                 1900.00 |
+|     30 | SALESMAN  |  1600.00 |                 7800.00 |
+|     20 | MANAGER   |  2975.00 |                 2975.00 |
+|     30 | MANAGER   |  2850.00 |                 2850.00 |
+|     10 | MANAGER   |  2450.00 |                 2450.00 |
+|     20 | ANALYST   |  3000.00 |                 6000.00 |
+|     10 | PRESIDENT |  5000.00 |                 5000.00 |
+|     30 | CLERK     |   950.00 |                  950.00 |
+|     10 | CLERK     |  1300.00 |                 1300.00 |
+|     10 | Designer  | 34567.00 |                38023.00 |
++--------+-----------+----------+-------------------------+
+10 rows in set (0.00 sec)
+
+mysql> Select mgr,count(*)
+    -> From emp
+    -> Where job in (’ANALYST’,’SALESMAN’)
+    -> Group by mgr
+    -> Having count(*) > 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?ANALYST?,?SALESMAN?)
+Group by mgr
+Having count(*) > 2' at line 3
+mysql> Select mgr,count(*)
+    -> From emp
+    -> Where job in ('ANALYST','SALESMAN');
++------+----------+
+| mgr  | count(*) |
++------+----------+
+| 7698 |        6 |
++------+----------+
+1 row in set (0.00 sec)
+
+mysql> Select mgr,count(*)
+    -> From emp
+    -> Where job in ('ANALYST','SALESMAN');
++------+----------+
+| mgr  | count(*) |
++------+----------+
+| 7698 |        6 |
++------+----------+
+1 row in set (0.00 sec)
+
+mysql> Select mgr,count(*)
+    -> From emp
+    -> Where job in ('ANALYST','SALESMAN')
+    -> Group by mgr;
++------+----------+
+| mgr  | count(*) |
++------+----------+
+| 7698 |        4 |
+| 7566 |        2 |
++------+----------+
+2 rows in set (0.00 sec)
+
+mysql> desc emp;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int          | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int          | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL      | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+----------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |   800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |  1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |  1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |  2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |  1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |  2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |  2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |  3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |  5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |  1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |  1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |  3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |  1300.00 |    NULL |     10 |
+|   123 | Rajan  | Designer  | 7902 | 2017-01-01 | 34567.00 | 3456.00 |     10 |
++-------+--------+-----------+------+------------+----------+---------+--------+
+15 rows in set (0.00 sec)
+
+mysql> select * from dept;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> create table student(
+    -> studid int primary key,
+    -> sname varchar(20),
+    -> marks int);
+ERROR 1050 (42S01): Table 'student' already exists
+mysql> create table student_2(
+    -> studid int primary key,
+    -> sname varchar(20),
+    -> marks int);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into student_2 values(100,'Rajan',99);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student_2 values(100,'Rajan',99);
+ERROR 1062 (23000): Duplicate entry '100' for key 'student_2.PRIMARY'
+mysql> insert into student_2 values(101,'Revati',99);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student_2(studid,sname) values(102,'Revati');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student_2(sname,studid) values('Revati',103);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from student_2;
++--------+--------+-------+
+| studid | sname  | marks |
++--------+--------+-------+
+|    100 | Rajan  |    99 |
+|    101 | Revati |    99 |
+|    102 | Revati |  NULL |
+|    103 | Revati |  NULL |
++--------+--------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into student_2 values(104,'Rajan',-99);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> drop table student_2;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table student_2(
+    -> studid int primary key,
+    -> sname varchar(20),
+    -> marks int check(marks between 0 and 100));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into student_2 values(101,'Revati',99);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into student_2 values(100,'Rajan',99);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student_2 values(102,'Rajan',-99);
+ERROR 3819 (HY000): Check constraint 'student_2_chk_1' is violated.
+mysql> insert into student_2 values(102,'Rajan',123);
+ERROR 3819 (HY000): Check constraint 'student_2_chk_1' is violated.
+mysql> Create table product(
+    -> Prodid int primary key,
+    -> Pname varchar(30) not null unique,
+    -> Qty int default 10,
+    -> Price decimal(9,2) check(price>0),
+    -> Mfgdate date);
+ERROR 1050 (42S01): Table 'product' already exists
+mysql> Create table product_2(
+    -> Prodid int primary key,
+    -> Pname varchar(30) not null unique,
+    -> Qty int default 10,
+    -> Price decimal(9,2) check(price>0),
+    -> Mfgdate date);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc product_2;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| Prodid  | int          | NO   | PRI | NULL    |       |
+| Pname   | varchar(30)  | NO   | UNI | NULL    |       |
+| Qty     | int          | YES  |     | 10      |       |
+| Price   | decimal(9,2) | YES  |     | NULL    |       |
+| Mfgdate | date         | YES  |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> insert into product_2 values(10,'lays',23,40.00,'2022-10-30');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into product_2(prodid,pname) values(11,'lays_onion');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from product_2;
++--------+------------+------+-------+------------+
+| Prodid | Pname      | Qty  | Price | Mfgdate    |
++--------+------------+------+-------+------------+
+|     10 | lays       |   23 | 40.00 | 2022-10-30 |
+|     11 | lays_onion |   10 |  NULL | NULL       |
++--------+------------+------+-------+------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into product_2(prodid,pname) values(11,'lays_onion');
+ERROR 1062 (23000): Duplicate entry '11' for key 'product_2.PRIMARY'
+mysql> insert into product_2(prodid,pname) values(12,'lays_onion');
+ERROR 1062 (23000): Duplicate entry 'lays_onion' for key 'product_2.Pname'
+mysql> insert into product_2(prodid,pname) values(12,'nachos');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from product_2;
++--------+------------+------+-------+------------+
+| Prodid | Pname      | Qty  | Price | Mfgdate    |
++--------+------------+------+-------+------------+
+|     10 | lays       |   23 | 40.00 | 2022-10-30 |
+|     11 | lays_onion |   10 |  NULL | NULL       |
+|     12 | nachos     |   10 |  NULL | NULL       |
++--------+------------+------+-------+------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into product_2(prodid,pname,price) values(11,'lays_onion',-34);
+ERROR 3819 (HY000): Check constraint 'product_2_chk_1' is violated.
+mysql> Create table customer_2(
+    -> Custid int primary key,
+    -> Cname varchar(20) not null,
+    -> Mobile int unique,
+    -> Email varchar(30));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> Create table account_2(
+    -> Acid int primary key,
+    -> Cid int,
+    -> Type varchar(30),
+    -> Balance double(9,2) check(balance>1000),
+    -> Constraint fk_cid_2 foreign key(Cid) references customer_2(custid))
+    ->
+    -> ;
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+
+mysql> insert into customer_2 values(111,'Rajan',33333,'dasd@sf')
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into customer_2 values(112,'Revati',44444,'dasd@sf')
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from customer_2;
++--------+--------+--------+---------+
+| Custid | Cname  | Mobile | Email   |
++--------+--------+--------+---------+
+|    111 | Rajan  |  33333 | dasd@sf |
+|    112 | Revati |  44444 | dasd@sf |
++--------+--------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> insert into account_1 values(100,111,'saving',234567);
+ERROR 1146 (42S02): Table 'test.account_1' doesn't exist
+mysql> insert into account_2 values(100,111,'saving',234567);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into account_2 values(100,111,'saving',234567);
+ERROR 1062 (23000): Duplicate entry '100' for key 'account_2.PRIMARY'
+mysql> insert into account_2 values(102,111,'saving',234567);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into account_2 values(103,1111,'saving',234567);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`test`.`account_2`, CONSTRAINT `fk_cid_2` FOREIGN KEY (`Cid`) REFERENCES `customer_2` (`Custid`))
+mysql> insert into account_2 values(103,112,'saving',2345671);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from customer_2;
++--------+--------+--------+---------+
+| Custid | Cname  | Mobile | Email   |
++--------+--------+--------+---------+
+|    111 | Rajan  |  33333 | dasd@sf |
+|    112 | Revati |  44444 | dasd@sf |
++--------+--------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from account_2;
++------+------+--------+------------+
+| Acid | Cid  | Type   | Balance    |
++------+------+--------+------------+
+|  100 |  111 | saving |  234567.00 |
+|  102 |  111 | saving |  234567.00 |
+|  103 |  112 | saving | 2345671.00 |
++------+------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> Create table student_3(
+    -> Studid int,
+    -> Cname varchar(20),
+    -> Marks int,
+    -> Constraint pk_id_nm primary key(studid,cname));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into student_3 values(1,'java',99);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student_3 values(1,'java',98);
+ERROR 1062 (23000): Duplicate entry '1-java' for key 'student_3.PRIMARY'
+mysql> insert into student_3 values(2,'java',98);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student_3 values(2,'cpp',98);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from student_3;
++--------+-------+-------+
+| Studid | Cname | Marks |
++--------+-------+-------+
+|      1 | java  |    99 |
+|      2 | cpp   |    98 |
+|      2 | java  |    98 |
++--------+-------+-------+
+3 rows in set (0.00 sec)
+
+mysql> Create table mytab_3(
+    -> Id int primary key auto_increament,
+    -> Name varchar(30));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'auto_increament,
+Name varchar(30))' at line 2
+mysql> Create table mytab_3(
+    -> Id int primary key auto_increment,
+    -> Name varchar(30));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into mytab_3 values(default,'java');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into mytab_3 values(default,'cpp');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| Id | Name |
++----+------+
+|  1 | java |
+|  2 | cpp  |
++----+------+
+2 rows in set (0.00 sec)
+
+mysql> insert into mytab_3 values(5,'cpp');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| Id | Name |
++----+------+
+|  1 | java |
+|  2 | cpp  |
+|  5 | cpp  |
++----+------+
+3 rows in set (0.00 sec)
+
+mysql> insert into mytab_3 values(default,'cpp');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| Id | Name |
++----+------+
+|  1 | java |
+|  2 | cpp  |
+|  5 | cpp  |
+|  6 | cpp  |
++----+------+
+4 rows in set (0.00 sec)
+
+mysql> insert into mytab_3(name) values('perl');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from mytab_3;
++----+------+
+| Id | Name |
++----+------+
+|  1 | java |
+|  2 | cpp  |
+|  5 | cpp  |
+|  6 | cpp  |
+|  7 | perl |
++----+------+
+5 rows in set (0.00 sec)
+
+mysql> select * from customer_2;
++--------+--------+--------+---------+
+| Custid | Cname  | Mobile | Email   |
++--------+--------+--------+---------+
+|    111 | Rajan  |  33333 | dasd@sf |
+|    112 | Revati |  44444 | dasd@sf |
++--------+--------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from account_2;
++------+------+--------+------------+
+| Acid | Cid  | Type   | Balance    |
++------+------+--------+------------+
+|  100 |  111 | saving |  234567.00 |
+|  102 |  111 | saving |  234567.00 |
+|  103 |  112 | saving | 2345671.00 |
++------+------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from customer_2
+    -> where custid=112;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`test`.`account_2`, CONSTRAINT `fk_cid_2` FOREIGN KEY (`Cid`) REFERENCES `customer_2` (`Custid`))
+mysql> update customer
+    -> set custid=115
+    -> where custid=112;
+ERROR 1054 (42S22): Unknown column 'custid' in 'where clause'
+mysql> update customer_2
+    -> set custid=115
+    -> where custid=112;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`test`.`account_2`, CONSTRAINT `fk_cid_2` FOREIGN KEY (`Cid`) REFERENCES `customer_2` (`Custid`))
+mysql> delete from account_2 where acid=103;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from account_2;
++------+------+--------+-----------+
+| Acid | Cid  | Type   | Balance   |
++------+------+--------+-----------+
+|  100 |  111 | saving | 234567.00 |
+|  102 |  111 | saving | 234567.00 |
++------+------+--------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from customer_2;
++--------+--------+--------+---------+
+| Custid | Cname  | Mobile | Email   |
++--------+--------+--------+---------+
+|    111 | Rajan  |  33333 | dasd@sf |
+|    112 | Revati |  44444 | dasd@sf |
++--------+--------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> update customer_2
+    -> set custid=115
+    -> where custid=112;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> delete customer_2
+    -> where custid=115;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where custid=115' at line 2
+mysql> delete from customer_2
+    -> where custid=115;
+Query OK, 1 row affected (0.01 sec)
+
+mysql>

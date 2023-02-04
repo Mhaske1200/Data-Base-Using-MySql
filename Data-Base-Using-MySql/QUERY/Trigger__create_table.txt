@@ -1,0 +1,5 @@
+create table emp_back(
+empno int,
+ename varchar(20),
+oldsal decimal(9,2), 
+newsal decimal(9,2));
